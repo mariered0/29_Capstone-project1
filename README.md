@@ -14,7 +14,7 @@ Data will be sourced from the following:
     Book cover images are provided through their API as well as other information on authors, book titles, and the date published.
     
 ## DATABASE SCHEMA
-![database schema](https://github.com/mariered0/29_Capstone-project1/main/Documentation/Images_doc/Schema_Booklyn.png?raw=true)
+![database schema](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/Schema_Booklyn.png?raw=true)
 
 
 
