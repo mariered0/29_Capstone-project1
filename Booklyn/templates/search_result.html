@@ -4,15 +4,32 @@
 
 {% block content %}
 
-<ul class="list-unstyled">
-    {% if result %}
-    <li class="media">
-      <img src="..." class="mr-3" alt="...">
-      <div class="media-body">
-        <h5 class="mt-0 mb-1">{{result}}</p>
-      </div>
-    </li>
-    {% endif %}
+<ul class="list-unstyled ">
+  {% if result %}
+  <p>Found {{ result['items']|length }} books with the title "{{ search }}." </p>
+  {% for book in result['items'] %}
+  <li class="media mt-3" id="book-li">
+    <img src="{{ book.volumeInfo.imageLinks.smallThumbnail }}" class="mr-3" id="book-sm-thumnail-img" alt="book cover image">
+    <div class="media-body">
+      <h5 class="mt-0 mb-1">
+        {{ book.volumeInfo.title }}
+        {{ ': ' + book.volumeInfo.subtitle if book.volumeInfo.subtitle }}
+      </h5>
+      <h6 class="card-subtitle mb-2 text-muted">
+        by 
+        {% for author in book.volumeInfo.authors %}
+        {{ author }}
+        {{ "," if not loop.last else "" }}
+        {% endfor %}
+      </h6>
+      <p class="card-text">
+        {{ book.volumeInfo.description | truncate(300)}}
+      </p>
+
+    </div>
+  </li>
+  {% endfor %}
+  {% endif %}
 </ul>
 
 {% endblock %}

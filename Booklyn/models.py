@@ -31,7 +31,6 @@ class Publisher(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     publisher = db.Column(db.Text, nullable=False)
-    books = db.relationship('Book')
 
 class Book(db.Model):
     """Books."""
@@ -49,7 +48,7 @@ class Book(db.Model):
 
     reviews = db.relationship('Review', backref='book')
     publisher = db.relationship('Publisher', backref='books')
-    authors = db.relationship('Author', backref='authors')
+    authors = db.relationship('Author', backref='books')
 
 class User(db.Model):
     """Users."""
@@ -68,6 +67,7 @@ class User(db.Model):
     favorite = db.ForeignKey('books.id', nullable=True)
 
     books = db.relationship('Book', backref='user')
+    reviews = db.relationship('Review', backref='user')
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"

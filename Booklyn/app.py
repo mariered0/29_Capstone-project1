@@ -2,6 +2,8 @@ from flask import Flask, request, render_template, redirect, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
 import requests
+from secret import GOOGLE_BOOKS_API_KEY
+
 
 app = Flask(__name__)
 
@@ -27,10 +29,13 @@ def home_page():
 def search():
     """Get book data."""
     search = request.args.get('q')
-    res = requests.get(f'{url}/volumes', params=search)
+    print(GOOGLE_BOOKS_API_KEY)
+    res = requests.get(f'{url}/volumes', params={'key': GOOGLE_BOOKS_API_KEY, 'q': search} )
     result = res.json()
     print('result', result)
-    return render_template('search_result.html', result=result)
+    return render_template('search_result.html', result=result, search=search)
+
+
 
 
 
