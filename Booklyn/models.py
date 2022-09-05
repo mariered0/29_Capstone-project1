@@ -8,6 +8,12 @@ from flask_sqlalchemy import SQLAlchemy
 bcrypt = Bcrypt()
 db = SQLAlchemy()
 
+def connect_db(app):
+    """Connect to database."""
+    db.app = app
+    db.init_app(app)
+    
+
 class Category(db.Model):
     """Categories for books."""
 
@@ -31,11 +37,12 @@ class Publisher(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     publisher = db.Column(db.Text, nullable=False)
+    book_id = db.ForeignKey('books.id', nullable=True)
 
 class Book(db.Model):
     """Books."""
 
-    __tablename__ = 'categories'
+    __tablename__ = 'books'
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text, nullable=False)
@@ -44,9 +51,8 @@ class Book(db.Model):
     published_date = db.Column(db.DateTime, nullable=False)
     author_id = db.ForeignKey('authors.id', nullable=False)
     category_id = db.ForeignKey('categories.id', nullable=False)
-    publisher_id = db.ForeignKey('publishers.id', nullable=False)
 
-    reviews = db.relationship('Review', backref='book')
+    
     publisher = db.relationship('Publisher', backref='books')
     authors = db.relationship('Author', backref='books')
 
@@ -72,46 +78,48 @@ class User(db.Model):
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
-@classmethod
-def signup(cls, username, password, email, image_url):
-    """Sing up user."""
+    @classmethod
+    def signup(cls, username, password, email, image_url):
+        """Sing up user."""
 
-    hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
+        hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
 
-    user = User(
+        user = User(
             username=username,
             email=email,
             password=hashed_pwd,
             image_url=image_url,
         )
 
-    db.session.add(user)
-    return user
+        db.session.add(user)
+        return user
 
-@classmethod
-def authenticate(cls, username, password):
-    """Find user with username and password"""
+    @classmethod
+    def authenticate(cls, username, password):
+        """Find user with username and password"""
 
-    user = cls.query.filter_by(username=username).first()
+        user = cls.query.filter_by(username=username).first()
 
-    if user:
-        is_auth = bcrypt.check_password_hash(user.password, password)
-        if is_auth:
-            return user
+        if user:
+            is_auth = bcrypt.check_password_hash(user.password, password)
+            if is_auth:
+                return user
     
-    return False
+        return False
 
 
 
 class Review(db.Model):
     """Reviews."""
 
-    __table__ = 'reviews'
+    __tablename__ = 'reviews'
 
     id = db.Column(db.Integer, primary_key=True)
     review = db.Column(db.Text, nullable=False)
     user_id = db.ForeignKey('users.id', nullable=False)
     book_id = db.ForeignKey('books.id', nullable=False)
+    
+    # book = db.relationship('Book', backref='reviews')
 
 
 

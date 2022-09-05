@@ -1,8 +1,10 @@
 from flask import Flask, request, render_template, redirect, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
-import requests
 from secret import GOOGLE_BOOKS_API_KEY
+from models import db, connect_db, User
+
+import requests
 
 
 app = Flask(__name__)
@@ -10,8 +12,9 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///booklyn_db'
 
 db = SQLAlchemy()
-db.app = app
-db.init_app(app)
+
+
+connect_db(app);
 
 app.config['SECRET_KEY'] = "hahaha1987"
 # app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
