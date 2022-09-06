@@ -49,13 +49,18 @@ class Book(db.Model):
     subtitle = db.Column(db.Text, nullable=False)
     thumbnail = db.Column(db.Text, default='/static/images/cover-not-available.png')
     published_date = db.Column(db.DateTime, nullable=False)
-    author_id = db.ForeignKey('authors.id', nullable=False)
-    category_id = db.ForeignKey('categories.id', nullable=False)
-    publisher_id = db.ForeignKey('publishers.id', nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey('authors.id'), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
+    publisher_id = db.Column(db.Integer, db.ForeignKey('publishers.id'), nullable=False)
 
     
     publisher = db.relationship('Publisher', backref='books', primaryjoin='Publisher.id==Book.publisher_id')
     authors = db.relationship('Author', backref='books')
+    
+    book_want_to_read = db.relationship("User", backref='user_want_to_read', primaryjoin='User.want_to_read==Book.id')
+    book_currently_reading = db.relationship("User", backref='user_currently_reading', primaryjoin='User.currently_reading==Book.id')
+    book_have_read = db.relationship("User", backref='user_have_read', primaryjoin='User.have_read==Book.id')
+    book_favorite = db.relationship("User", backref='user_favorite', primaryjoin='User.favorite==Book.id')
 
 class User(db.Model):
     """Users."""
@@ -68,12 +73,12 @@ class User(db.Model):
     email = db.Column(db.Text, nullable=False, unique=True)
     image_url = db.Column(db.Text, default='/static/images/user.png')
     bio = db.Column(db.Text, nullable=True)
-    want_to_read = db.ForeignKey('books.id', nullable=True)
-    currently_reading = db.ForeignKey('books.id', nullable=True)
-    have_read = db.ForeignKey('books.id', nullable=True)
-    favorite = db.ForeignKey('books.id', nullable=True)
+    want_to_read = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=True)
+    currently_reading = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=True)
+    have_read = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=True)
+    favorite = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=True)
 
-    books = db.relationship('Book', backref='user')
+    
     reviews = db.relationship('Review', backref='user')
 
     def __repr__(self):
@@ -117,10 +122,10 @@ class Review(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     review = db.Column(db.Text, nullable=False)
-    user_id = db.ForeignKey('users.id', nullable=False)
-    book_id = db.ForeignKey('books.id', nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
     
-    # book = db.relationship('Book', backref='reviews')
+
 
 
 
