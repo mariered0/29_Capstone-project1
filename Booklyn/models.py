@@ -37,7 +37,7 @@ class Publisher(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     publisher = db.Column(db.Text, nullable=False)
-    book_id = db.ForeignKey('books.id', nullable=True)
+  
 
 class Book(db.Model):
     """Books."""
@@ -51,9 +51,10 @@ class Book(db.Model):
     published_date = db.Column(db.DateTime, nullable=False)
     author_id = db.ForeignKey('authors.id', nullable=False)
     category_id = db.ForeignKey('categories.id', nullable=False)
+    publisher_id = db.ForeignKey('publishers.id', nullable=False)
 
     
-    publisher = db.relationship('Publisher', backref='books')
+    publisher = db.relationship('Publisher', backref='books', primaryjoin='Publisher.id==Book.publisher_id')
     authors = db.relationship('Author', backref='books')
 
 class User(db.Model):

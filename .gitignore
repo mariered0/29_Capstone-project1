@@ -1,3 +1,4 @@
 .DS_Store
 venv/
-Booklyn/__pychache__/
+Booklyn/__pycache__/
+Booklyn/secret.py
