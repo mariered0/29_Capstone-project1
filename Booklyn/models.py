@@ -14,6 +14,8 @@ def connect_db(app):
     db.init_app(app)
     
 
+
+
 class Category(db.Model):
     """Categories for books."""
 
@@ -56,7 +58,7 @@ class Book(db.Model):
     
     publisher = db.relationship('Publisher', backref='books', primaryjoin='Publisher.id==Book.publisher_id')
     authors = db.relationship('Author', backref='books')
-    
+
     book_want_to_read = db.relationship("User", backref='user_want_to_read', primaryjoin='User.want_to_read==Book.id')
     book_currently_reading = db.relationship("User", backref='user_currently_reading', primaryjoin='User.currently_reading==Book.id')
     book_have_read = db.relationship("User", backref='user_have_read', primaryjoin='User.have_read==Book.id')
