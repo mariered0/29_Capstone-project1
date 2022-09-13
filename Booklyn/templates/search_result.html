@@ -9,14 +9,15 @@
   <p>Found {{ result['items']|length }} books with the title "{{ search }}." </p>
   {% for book in result['items'] %}
   <li class="media mt-3" id="book-li">
-    <img src="{{ book.volumeInfo.imageLinks.smallThumbnail }}" class="mr-3" id="book-sm-thumnail-img" alt="book cover image">
+    <img src="{{ book.volumeInfo.imageLinks.smallThumbnail }}" class="mr-3" id="book-sm-thumnail-img"
+      alt="book cover image">
     <div class="media-body">
       <h5 class="mt-0 mb-1">
         {{ book.volumeInfo.title }}
         {{ ': ' + book.volumeInfo.subtitle if book.volumeInfo.subtitle }}
       </h5>
       <h6 class="card-subtitle mb-2 text-muted">
-        by 
+        by
         {% for author in book.volumeInfo.authors %}
         {{ author }}
         {{ "," if not loop.last else "" }}
@@ -25,8 +26,26 @@
       <p class="card-text">
         {{ book.volumeInfo.description | truncate(300)}}
       </p>
+      <div class="btn-group">
+        <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          Add to List
+        </button>
+        <div class="dropdown-menu">
+          <form action="/users/add_want_to_read" method="post">
+            <input type="hidden" name="author" value="{{ book.volumeInfo.authors }}">
+            <input type="hidden" name="publisher" value="{{ book.volumeInfo.publisher }}">
+            <input type="hidden" name="title" value="{{ book.volumeInfo.title }}">
+            <button class="dropdown-item">Want to Read</button>
+          </form>
 
+
+          <a class="dropdown-item" href="#">Currently Reading</a>
+          <a class="dropdown-item" href="#">Read</a>
+        </div>
+      </div>
     </div>
+
   </li>
   {% endfor %}
   {% endif %}

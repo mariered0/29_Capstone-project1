@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from forms import UserAddForm, LoginForm
 from secret import GOOGLE_BOOKS_API_KEY
-from models import db, connect_db, User, Book, Review
+from models import db, connect_db, User, Author, Publisher, Category, Book, Review
 
 import requests
 
@@ -17,8 +17,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///booklyn_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #this echo allows us to see the SQL lines that happen in background
-app.config['SQLALCHEMY_ECHO'] = True
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
+app.config['SQLALCHEMY_ECHO'] = False
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 
 connect_db(app)
@@ -133,6 +133,35 @@ def logout():
     flash(f"Goodbye, {user.username}!", 'success')
     return redirect('/login')
 
+
+
+##########################################################
+# Books
+##########################################################
+
+
+@app.route('/users/add_want_to_read', methods=['POST'])
+def add_want_to_read():
+    """Add book to want_to_read list."""
+
+    # if not g.user:
+    #     flash("Access unauthorized.", 'danger')
+    #     return redirect('/')
+
+    # book = Book.query.get_or_404(book_id)
+    # if not book:
+    res = request.form
+    for key, value in request.form.items():
+        print("item: {0}, data: {1}".format(key, value))
+        key = value
+        print(value)
+
+ 
+    print('**********************')
+    print('data received', author)
+
+    #    author = Author(author=)
+    return redirect('/')
 
 
 
