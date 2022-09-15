@@ -26,6 +26,13 @@
       <p class="card-text">
         {{ book.volumeInfo.description | truncate(300)}}
       </p>
+      <p class="card-subtitle mb-2 text-muted">
+        Genre: 
+        {% for category in book.volumeInfo.categories %}
+        {{ category }}
+        {{ "," if not loop.last else "" }}
+        {% endfor %}
+      </p>
       <div class="btn-group">
         <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
           aria-expanded="false">
@@ -35,7 +42,13 @@
           <form action="/users/add_want_to_read" method="post">
             <input type="hidden" name="author" value="{{ book.volumeInfo.authors }}">
             <input type="hidden" name="publisher" value="{{ book.volumeInfo.publisher }}">
+            <input type="hidden" name="category" value="{{ book.volumeInfo.categories }}">
+
             <input type="hidden" name="title" value="{{ book.volumeInfo.title }}">
+            <input type="hidden" name="subtitle" value="{{ book.volumeInfo.subtitle }}">
+            <input type="hidden" name="published_date" value="{{ book.volumeInfo.publishedDate }}">
+            <input type="hidden" name="thumbnail" value="{{ book.volumeInfo.imageLinks.smallThumbnail }}">
+            
             <button class="dropdown-item">Want to Read</button>
           </form>
 

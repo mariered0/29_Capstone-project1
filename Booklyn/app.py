@@ -7,7 +7,7 @@ from forms import UserAddForm, LoginForm
 from secret import GOOGLE_BOOKS_API_KEY
 from models import db, connect_db, User, Author, Publisher, Category, Book, Review
 
-import requests
+import requests, ast
 
 CURR_USER_KEY = 'curr_user'
 
@@ -17,7 +17,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///booklyn_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #this echo allows us to see the SQL lines that happen in background
-app.config['SQLALCHEMY_ECHO'] = False
+app.config['SQLALCHEMY_ECHO'] = True
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 
@@ -36,10 +36,10 @@ url = 'https://www.googleapis.com/books/v1'
 def search():
     """Get book data."""
     search = request.args.get('q')
-    print(GOOGLE_BOOKS_API_KEY)
+    # print(GOOGLE_BOOKS_API_KEY)
     res = requests.get(f'{url}/volumes', params={'key': GOOGLE_BOOKS_API_KEY, 'q': search} )
     result = res.json()
-    print('result', result)
+    # print('result', result)
     return render_template('search_result.html', result=result, search=search)
 
 
@@ -144,23 +144,95 @@ def logout():
 def add_want_to_read():
     """Add book to want_to_read list."""
 
-    # if not g.user:
-    #     flash("Access unauthorized.", 'danger')
-    #     return redirect('/')
+    print('user', g.user)
+    if not g.user:
+        flash("Access unauthorized.", 'danger')
+        return redirect('/')
 
-    # book = Book.query.get_or_404(book_id)
-    # if not book:
-    res = request.form
+    data = {}
     for key, value in request.form.items():
         print("item: {0}, data: {1}".format(key, value))
-        key = value
-        print(value)
+        data[key] = value
+    
+    # Create author data in db
+    authors = ast.literal_eval(data['author'])
+    if len(authors) != 1:
+        for author in authors:
+            if not Author.query.filter(Author.author == author).all():
+                print('went through author')
+                new_author = Author(author=author)
+                db.session.add(new_author)
+                db.session.commit()
+    else:
+        if not Author.query.filter(Author.author == authors[0]).all():
+                print('went through author else')
+                new_author = Author(author=authors[0])
+                db.session.add(new_author)
+                db.session.commit()
 
- 
+    # Create category data in db
+    categories = ast.literal_eval(data['category'])
+    print('categories', categories[0])
+    if len(categories) != 1:
+        for category in categories:
+            if not Category.query.filter(Category.category == category).all():
+                print('went through category')
+                new_category = Category(category=category)
+                db.session.add(new_category)
+                db.session.commit()
+    else:
+        if not Category.query.filter(Category.category == categories[0]).all():
+            print('went through category else')
+            new_category = Category(category=categories[0])
+            print('category', categories[0])
+            db.session.add(new_category)
+            db.session.commit()
+
+    
+    publisher = data['publisher']
+    if not Publisher.query.filter(Publisher.publisher == publisher).all():
+        new_publisher = Publisher(publisher=publisher)
+        print('went through publisher')
+        db.session.add(new_publisher)
+        db.session.commit()
+
+    title = data['title']
+    subtitle = data['subtitle']
+    published_date = data['published_date']
+    thumbnail = data['thumbnail']
+
+    if len(authors) == 1:
+        author = Author.query.filter_by(author=authors[0]).first()
+        author_id = author.id
+    
+    else:
+        author_id = []
+        for author in authors:
+            author = Author.query.filter_by(author=author).first()
+            author_id.append(author.id)
+
+            
+    if len(categories) == 1:
+        category = Category.query.filter_by(category=categories[0]).first()
+        category_id = category.id
+    else:
+        category_id = []
+        for category in categories:
+            category = Category.query.filter_by(category=category).first()
+            category_id.append(category.id)
+
+    publisher = Publisher.query.filter_by(publisher=publisher).first()
+    publisher_id = publisher.id
+
+
+    if not Book.query.filter_by(title=title).first():
+        print('went through book')
+        new_book = Book(title=title, subtitle=subtitle, thumbnail=thumbnail, published_date=published_date, author_id=author_id, category_id=category_id, publisher_id=publisher_id)
+        db.session.add(new_book)
+        db.session.commit()
+
     print('**********************')
-    print('data received', author)
 
-    #    author = Author(author=)
     return redirect('/')
 
 

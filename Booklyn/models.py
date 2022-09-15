@@ -48,7 +48,7 @@ class Book(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text, nullable=False)
-    subtitle = db.Column(db.Text, nullable=False)
+    subtitle = db.Column(db.Text, nullable=True)
     thumbnail = db.Column(db.Text, default='/static/images/cover-not-available.png')
     published_date = db.Column(db.DateTime, nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('authors.id'), nullable=False)
