@@ -83,6 +83,8 @@ class BookCategory(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey('books.id'), primary_key=True)
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), primary_key=True)
 
+    
+
 
 class User(db.Model):
     """Users."""

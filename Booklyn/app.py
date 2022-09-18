@@ -246,21 +246,23 @@ def add_want_to_read():
     else:
         book = Book.query.filter_by(title=title, publisher=publisher).first()
 
-    
     user = g.user
     print('g.user', g.user)
     user.want_to_read = book.id
     db.session.commit()
     
-    
-
-    print('**********************')
-    print('check', user.want_to_read)
-
     flash('Added to the list!', 'success')
 
     return redirect('/')
 
 
+##########################################################
+# Users
+##########################################################
 
+@app.route('/users/<int:user_id>')
+def users_show(user_id):
+    """Show user page."""
+    user = User.query.get_or_404(user_id)
 
+    return render_template('users/show.html', user=user)
