@@ -14,8 +14,6 @@ def connect_db(app):
     db.init_app(app)
     
 
-
-
 class Category(db.Model):
     """Categories for books."""
 
@@ -39,6 +37,8 @@ class Publisher(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     publisher = db.Column(db.Text, nullable=False)
+
+
   
 
 class Book(db.Model):
@@ -51,18 +51,38 @@ class Book(db.Model):
     subtitle = db.Column(db.Text, nullable=True)
     thumbnail = db.Column(db.Text, default='/static/images/cover-not-available.png')
     published_date = db.Column(db.DateTime, nullable=False)
-    author_id = db.Column(db.Integer, db.ForeignKey('authors.id'), nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
+
     publisher_id = db.Column(db.Integer, db.ForeignKey('publishers.id'), nullable=False)
 
+    authors = db.relationship('Author', secondary='books_authors', backref='books')
+    categories = db.relationship('Category', secondary='books_categories', backref='books')
     
     publisher = db.relationship('Publisher', backref='books', primaryjoin='Publisher.id==Book.publisher_id')
-    authors = db.relationship('Author', backref='books')
+
 
     book_want_to_read = db.relationship("User", backref='user_want_to_read', primaryjoin='User.want_to_read==Book.id')
     book_currently_reading = db.relationship("User", backref='user_currently_reading', primaryjoin='User.currently_reading==Book.id')
     book_have_read = db.relationship("User", backref='user_have_read', primaryjoin='User.have_read==Book.id')
     book_favorite = db.relationship("User", backref='user_favorite', primaryjoin='User.favorite==Book.id')
+
+
+class BookAuthor(db.Model):
+    """Middle table for the relationship between a book and authors."""
+
+    __tablename__ = 'books_authors'
+
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), primary_key=True)
+    author_id = db.Column(db.Integer, db.ForeignKey('authors.id'), primary_key=True)
+
+
+class BookCategory(db.Model):
+    """Middle table for the relationship between a book and categories."""
+
+    __tablename__ = 'books_categories'
+
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), primary_key=True)
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), primary_key=True)
+
 
 class User(db.Model):
     """Users."""
@@ -75,10 +95,11 @@ class User(db.Model):
     email = db.Column(db.Text, nullable=False, unique=True)
     image_url = db.Column(db.Text, default='/static/images/user.png')
     bio = db.Column(db.Text, nullable=True)
-    want_to_read = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=True)
-    currently_reading = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=True)
-    have_read = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=True)
-    favorite = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=True)
+
+    want_to_read = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), nullable=True)
+    currently_reading = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), nullable=True)
+    have_read = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), nullable=True)
+    favorite = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), nullable=True)
 
     
     reviews = db.relationship('Review', backref='user')

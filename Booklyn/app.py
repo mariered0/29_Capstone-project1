@@ -1,11 +1,11 @@
-from sqlite3 import IntegrityError
 from flask import Flask, request, render_template, redirect, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
+
 from forms import UserAddForm, LoginForm
 from secret import GOOGLE_BOOKS_API_KEY
-from models import db, connect_db, User, Author, Publisher, Category, Book, Review
+from models import db, connect_db, User, Author, Publisher, Category, Book, BookAuthor, BookCategory, Review
 
 import requests, ast
 
@@ -144,7 +144,6 @@ def logout():
 def add_want_to_read():
     """Add book to want_to_read list."""
 
-    print('user', g.user)
     if not g.user:
         flash("Access unauthorized.", 'danger')
         return redirect('/')
@@ -156,6 +155,8 @@ def add_want_to_read():
     
     # Create author data in db
     authors = ast.literal_eval(data['author'])
+
+    # if there are multiple authors
     if len(authors) != 1:
         for author in authors:
             if not Author.query.filter(Author.author == author).all():
@@ -163,6 +164,8 @@ def add_want_to_read():
                 new_author = Author(author=author)
                 db.session.add(new_author)
                 db.session.commit()
+
+    # if there's only one author
     else:
         if not Author.query.filter(Author.author == authors[0]).all():
                 print('went through author else')
@@ -188,7 +191,6 @@ def add_want_to_read():
             db.session.add(new_category)
             db.session.commit()
 
-    
     publisher = data['publisher']
     if not Publisher.query.filter(Publisher.publisher == publisher).all():
         new_publisher = Publisher(publisher=publisher)
@@ -196,42 +198,66 @@ def add_want_to_read():
         db.session.add(new_publisher)
         db.session.commit()
 
+    # Create book data in db
     title = data['title']
     subtitle = data['subtitle']
     published_date = data['published_date']
     thumbnail = data['thumbnail']
 
-    if len(authors) == 1:
-        author = Author.query.filter_by(author=authors[0]).first()
-        author_id = author.id
-    
-    else:
-        author_id = []
-        for author in authors:
-            author = Author.query.filter_by(author=author).first()
-            author_id.append(author.id)
-
-            
-    if len(categories) == 1:
-        category = Category.query.filter_by(category=categories[0]).first()
-        category_id = category.id
-    else:
-        category_id = []
-        for category in categories:
-            category = Category.query.filter_by(category=category).first()
-            category_id.append(category.id)
-
     publisher = Publisher.query.filter_by(publisher=publisher).first()
     publisher_id = publisher.id
 
-
     if not Book.query.filter_by(title=title).first():
         print('went through book')
-        new_book = Book(title=title, subtitle=subtitle, thumbnail=thumbnail, published_date=published_date, author_id=author_id, category_id=category_id, publisher_id=publisher_id)
+        new_book = Book(title=title, subtitle=subtitle, thumbnail=thumbnail, published_date=published_date, publisher_id=publisher_id)
         db.session.add(new_book)
         db.session.commit()
 
+        # Create books_authors relationship
+        if len(authors) != 1:
+            for author in authors:
+                author = Author.query.filter(Author.author == author).first()
+                print('author to add', author)
+                author_relationship = new_book.authors.append(author)
+                db.session.add(author_relationship)
+                db.session.commit()
+        else:
+            author = Author.query.filter(Author.author == authors[0]).first()
+            print('author to add', author)
+            author_relationship = new_book.authors.append(author)
+            db.session.add(author_relationship)
+            db.session.commit()
+
+        # Create books_categories relationship
+        if len(categories) != 1:
+            for category in categories:
+                category = Category.query.filter(Category.category == category).first()
+                print('category to add', category)
+                category_relationship = new_book.categories.append(category)
+                db.session.add(category_relationship)
+                db.session.commit()
+        else:
+            category = Category.query.filter(Category.category == category).first()
+            print('category to add', category)
+            category_relationship = new_book.categories.append(category)
+            db.session.add(category_relationship)
+            db.session.commit()
+
+    else:
+        book = Book.query.filter_by(title=title, publisher=publisher).first()
+
+    
+    user = g.user
+    print('g.user', g.user)
+    user.want_to_read = book.id
+    db.session.commit()
+    
+    
+
     print('**********************')
+    print('check', user.want_to_read)
+
+    flash('Added to the list!', 'success')
 
     return redirect('/')
 
