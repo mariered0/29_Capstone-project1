@@ -50,7 +50,7 @@ class Book(db.Model):
     title = db.Column(db.Text, nullable=False)
     subtitle = db.Column(db.Text, nullable=True)
     thumbnail = db.Column(db.Text, default='/static/images/cover-not-available.png')
-    published_date = db.Column(db.DateTime, nullable=False)
+    # published_date = db.Column(db.DateTime, nullable=False)
 
     publisher_id = db.Column(db.Integer, db.ForeignKey('publishers.id'), nullable=False)
 
@@ -58,12 +58,6 @@ class Book(db.Model):
     categories = db.relationship('Category', secondary='books_categories', backref='books')
     
     publisher = db.relationship('Publisher', backref='books', primaryjoin='Publisher.id==Book.publisher_id')
-
-
-    book_want_to_read = db.relationship("User", backref='user_want_to_read', primaryjoin='User.want_to_read==Book.id')
-    book_currently_reading = db.relationship("User", backref='user_currently_reading', primaryjoin='User.currently_reading==Book.id')
-    book_have_read = db.relationship("User", backref='user_have_read', primaryjoin='User.have_read==Book.id')
-    book_favorite = db.relationship("User", backref='user_favorite', primaryjoin='User.favorite==Book.id')
 
 
 class BookAuthor(db.Model):
@@ -83,7 +77,43 @@ class BookCategory(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey('books.id'), primary_key=True)
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), primary_key=True)
 
+
+class WantToRead(db.Model):
+    """Middle table for the relationship between a user and the user's want_to_read books."""
+
+    __tablename__ = 'want_to_read'
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="cascade"), primary_key=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), primary_key=True)
     
+
+class CurrentlyReading(db.Model):
+    """Middle table for the relationship between a user and the books that the user's currently reading."""
+
+    __tablename__ = 'currently_reading'
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="cascade"), primary_key=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), primary_key=True)
+
+
+class Read(db.Model):
+    """Middle table for the relationship between a user and the books that the user has read."""
+
+    __tablename__ = 'read'
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="cascade"), primary_key=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), primary_key=True)
+
+
+class Favorite(db.Model):
+    """Middle table for the relationship between a user and their favorite books."""
+
+    __tablename__ = 'favorite'
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="cascade"), primary_key=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), primary_key=True)
+
+
 
 
 class User(db.Model):
@@ -98,16 +128,16 @@ class User(db.Model):
     image_url = db.Column(db.Text, default='/static/images/user.png')
     bio = db.Column(db.Text, nullable=True)
 
-    want_to_read = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), nullable=True)
-    currently_reading = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), nullable=True)
-    have_read = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), nullable=True)
-    favorite = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), nullable=True)
+    want_to_read = db.relationship('Book', secondary='want_to_read', backref='want_to_read_books')
+    currently_reading = db.relationship('Book', secondary='currently_reading', backref='currently_reading_books')
+    read = db.relationship('Book', secondary='read', backref='read_books')
+    favorite = db.relationship('Book', secondary='favorite', backref='favorite_books')
 
-    
     reviews = db.relationship('Review', backref='user')
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
+
 
     @classmethod
     def signup(cls, username, password, email, image_url):

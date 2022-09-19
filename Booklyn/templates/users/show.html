@@ -21,19 +21,36 @@
             <p>{{ user.bio }}</p>
         </div>
         {% endif %}
-        {% if user.want_to_read %}
-        <!-- {% for book in user.want_to_read %} -->
-        <div class="media" id="want_to_read_div">
-            <li class="media mt-3">
-
-                <img src="" class="mr-3" alt="book cover image">
-                <div class="media-body">
-                    <h5>{{ book }}</h5>
-                </div>
-            </li>
+        
+        {% if user.favorites %}
+        <div id="favorites_div">
+            <p>{{ user.favorites }}</p>
         </div>
-        <!-- {% endfor %} -->
         {% endif %}
+
+        <h5>{{ user.username }}'s bookshelves:</h5>
+            <ul style="list-style: none;">
+                {% if user.want_to_read %}
+                <li>
+                    <a href="#Go to want to read list"><i class="fa-solid fa-book"></i> Books to read</a>
+                </li>
+                {% endif %}
+                {% if user %}
+                <li>
+                    <a href="#Go to currently reading list"><i class="fa-solid fa-book"></i> Books currently reading</a>
+                </li>
+                {% endif %}
+                {% if user %}
+                <li>
+                    <a href="#Go to read list"><i class="fa-solid fa-book"></i> Books read</a>
+                </li>
+                {% endif %}
+
+
+            </ul>
+
+        
+
 
     </div>
 
