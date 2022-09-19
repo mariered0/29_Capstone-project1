@@ -136,7 +136,7 @@ def logout():
 
 
 ##########################################################
-# Books
+# User - add to lists
 ##########################################################
 
 
@@ -156,45 +156,16 @@ def add_want_to_read():
     # Create author data in db
     authors = ast.literal_eval(data['author'])
 
-    # if there are multiple authors
-    if len(authors) != 1:
-        for author in authors:
-            if not Author.query.filter(Author.author == author).all():
-                print('went through author')
-                new_author = Author(author=author)
-                db.session.add(new_author)
-                db.session.commit()
-
-    # if there's only one author
-    else:
-        if not Author.query.filter(Author.author == authors[0]).all():
-                print('went through author else')
-                new_author = Author(author=authors[0])
-                db.session.add(new_author)
-                db.session.commit()
+    User.create_author_data(authors)
 
     # Create category data in db
     categories = ast.literal_eval(data['category'])
-    print('categories', categories[0])
-    if len(categories) != 1:
-        for category in categories:
-            if not Category.query.filter(Category.category == category).all():
-                print('went through category')
-                new_category = Category(category=category)
-                db.session.add(new_category)
-                db.session.commit()
-    else:
-        if not Category.query.filter(Category.category == categories[0]).all():
-            print('went through category else')
-            new_category = Category(category=categories[0])
-            print('category', categories[0])
-            db.session.add(new_category)
-            db.session.commit()
+
+    User.create_category_data(categories)
 
     publisher = data['publisher']
-    if not Publisher.query.filter(Publisher.publisher == publisher).all():
+    if not Publisher.query.filter(Publisher.publisher == publisher).first():
         new_publisher = Publisher(publisher=publisher)
-        print('went through publisher')
         db.session.add(new_publisher)
         db.session.commit()
 
@@ -204,52 +175,18 @@ def add_want_to_read():
     thumbnail = data['thumbnail']
 
     publisher = Publisher.query.filter_by(publisher=publisher).first()
-    publisher_id = publisher.id
 
-    if not Book.query.filter_by(title=title).first():
-        print('went through book')
-        new_book = Book(title=title, subtitle=subtitle, thumbnail=thumbnail, publisher_id=publisher_id)
-        db.session.add(new_book)
-        db.session.commit()
-
-        # Create books_authors relationship
-        if len(authors) != 1:
-            for author in authors:
-                author = Author.query.filter(Author.author == author).first()
-                print('author to add', author)
-                new_book.authors.append(author)
-                db.session.commit()
-        else:
-            author = Author.query.filter(Author.author == authors[0]).first()
-            print('author to add', author)
-            new_book.authors.append(author)
-            db.session.commit()
-
-        # Create books_categories relationship
-        if len(categories) != 1:
-            for category in categories:
-                cat = Category.query.filter(Category.category == category).first()
-                print('category to add', cat)
-                new_book.categories.append(cat)
-                db.session.commit()
-        else:
-            cat = Category.query.filter(Category.category == categories[0]).first()
-            print('category to add', cat)
-            new_book.categories.append(cat)
-            db.session.commit()
-
-    else:
-        new_book = Book.query.filter_by(title=title, publisher=publisher).first()
+    User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
+    new_book = User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
 
     user = g.user
-    print('g.user', g.user)
 
     user.want_to_read.append(new_book)
     db.session.commit()
     
     flash('Added to the list!', 'success')
 
-    return redirect('/')
+    return redirect(f'/users/{user.id}/to_read_list')
 
 
 ##########################################################
@@ -262,3 +199,16 @@ def users_show(user_id):
     user = User.query.get_or_404(user_id)
 
     return render_template('users/show.html', user=user)
+
+
+@app.route('/users/<int:user_id>/to_read_list')
+def show_to_read(user_id):
+    """Show user's to_read list."""
+
+    if not g.user:
+        flash("Access unauthorized.", 'danger')
+        return redirect('/')
+    
+    user = User.query.get_or_404(user_id)
+
+    return render_template('users/list_want_to_read.html', user=user)

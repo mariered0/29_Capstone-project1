@@ -32,7 +32,7 @@
             <ul style="list-style: none;">
                 {% if user.want_to_read %}
                 <li>
-                    <a href="#Go to want to read list"><i class="fa-solid fa-book"></i> Books to read</a>
+                    <a href="/users/{{ user.id }}/to_read_list"><i class="fa-solid fa-book"></i> Books to read</a>
                 </li>
                 {% endif %}
                 {% if user %}

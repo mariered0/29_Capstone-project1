@@ -5,6 +5,8 @@
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 
+import ast
+
 bcrypt = Bcrypt()
 db = SQLAlchemy()
 
@@ -167,6 +169,86 @@ class User(db.Model):
                 return user
     
         return False
+
+
+    @classmethod
+    def create_author_data(self, authors):
+        """Check if the author data already exists in db, and if it doesn't, add the author data to db."""
+
+        # if there are multiple authors
+        if len(authors) != 1:
+            for author in authors:
+                if not Author.query.filter(Author.author == author).all():
+                    new_author = Author(author=author)
+                    db.session.add(new_author)
+                    db.session.commit()
+
+        # if there's only one author
+        else:
+            if not Author.query.filter(Author.author == authors[0]).all():
+                new_author = Author(author=authors[0])
+                db.session.add(new_author)
+                db.session.commit()
+
+    @classmethod
+    def create_category_data(self, categories):
+        """Check if the category data already exists in db, and if it doesn't, add the category data to db."""
+
+        # if there are multiple categories
+        if len(categories) != 1:
+            for category in categories:
+                if not Category.query.filter(Category.category == category).all():
+                    new_category = Category(category=category)
+                    db.session.add(new_category)
+                    db.session.commit()
+
+        #if there's only one category
+        else:
+            if not Category.query.filter(Category.category == categories[0]).all():
+                new_category = Category(category=categories[0])
+                db.session.add(new_category)
+                db.session.commit()
+
+    @classmethod
+    def create_book_data(self, title, subtitle, thumbnail, authors, categories, publisher):
+        """ """
+
+        # Create book data in db
+
+        publisher_id=publisher.id
+
+        if not Book.query.filter_by(title=title).first():
+            new_book = Book(title=title, subtitle=subtitle, thumbnail=thumbnail, publisher_id=publisher_id)
+            db.session.add(new_book)
+            db.session.commit()
+
+        # Create books_authors relationship
+            if len(authors) != 1:
+                for author in authors:
+                    author = Author.query.filter(Author.author == author).first()
+                    new_book.authors.append(author)
+                    db.session.commit()
+            else:
+                author = Author.query.filter(Author.author == authors[0]).first()
+                new_book.authors.append(author)
+                db.session.commit()
+
+        # Create books_categories relationship
+            if len(categories) != 1:
+                for category in categories:
+                    cat = Category.query.filter(Category.category == category).first()
+                    new_book.categories.append(cat)
+                    db.session.commit()
+            else:
+                cat = Category.query.filter(Category.category == categories[0]).first()
+                new_book.categories.append(cat)
+                db.session.commit()
+
+        else:
+            new_book = Book.query.filter_by(title=title, publisher=publisher).first()
+
+        return new_book
+        
 
 
 
