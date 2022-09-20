@@ -5,13 +5,13 @@
 {% block content %}
 <div class="row">
     <div class="col-2">
-        <a href="#Go to edit profile"><img src="{{ user.image_url }}" alt="user's profile image"
+        <a href="/users/{{ user.id }}/edit"><img src="{{ user.image_url }}" alt="user's profile image"
                 class="img-thumbnail rounded-circle float-right mt-3" style="width: auto; height: 150px;"></a>
     </div>
     <div class="col-10">
         <div>
             <h2>{{ user.username }}
-                <a href="#Go to edit profile" class="text-muted inline edit_profile"><i
+                <a href="/users/{{ user.id }}/edit" class="text-muted inline edit_profile"><i
                         class="fa-solid fa-pen-to-square"></i></a>
             </h2>
             <hr>
@@ -32,12 +32,12 @@
             <ul style="list-style: none;">
                 {% if user.want_to_read %}
                 <li>
-                    <a href="/users/{{ user.id }}/to_read_list"><i class="fa-solid fa-book"></i> Books to read</a>
+                    <a href="/users/{{ user.id }}/want_to_read"><i class="fa-solid fa-book"></i> Books to read</a>
                 </li>
                 {% endif %}
                 {% if user %}
                 <li>
-                    <a href="#Go to currently reading list"><i class="fa-solid fa-book"></i> Books currently reading</a>
+                    <a href="/users/{{ user.id }}/currently_reading"><i class="fa-solid fa-book"></i> Books currently reading</a>
                 </li>
                 {% endif %}
                 {% if user %}

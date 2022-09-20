@@ -3,9 +3,9 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 
-from forms import UserAddForm, LoginForm
+from forms import UserAddForm, LoginForm, UserEditForm
 from secret import GOOGLE_BOOKS_API_KEY
-from models import db, connect_db, User, Author, Publisher, Category, Book, BookAuthor, BookCategory, Review, WantToRead, CurrentlyReading, Read, Favorite
+from models import db, connect_db, User, Author, Publisher, Category, Book, Review
 
 import requests, ast
 
@@ -35,12 +35,18 @@ url = 'https://www.googleapis.com/books/v1'
 @app.route('/search')
 def search():
     """Get book data."""
+    if not g.user:
+        flash("Access unauthorized.", 'danger')
+        return redirect('users/signup.html')
+
+    user = g.user
+
     search = request.args.get('q')
     # print(GOOGLE_BOOKS_API_KEY)
     res = requests.get(f'{url}/volumes', params={'key': GOOGLE_BOOKS_API_KEY, 'q': search} )
     result = res.json()
-    # print('result', result)
-    return render_template('search_result.html', result=result, search=search)
+
+    return render_template('search_result.html', result=result, search=search, user=user)
 
 
 
@@ -102,7 +108,7 @@ def signup():
 
         do_login(user)
 
-        return redirect('/')
+        return redirect(f'/users/{user.id}/')
     else:
         return render_template('users/signup.html', form=form)
 
@@ -136,12 +142,11 @@ def logout():
 
 
 ##########################################################
-# User - add to lists
+# User - add to/remove from lists
 ##########################################################
 
-
-@app.route('/users/add_want_to_read', methods=['POST'])
-def add_want_to_read():
+@app.route('/users/<int:user_id>/add_want_to_read', methods=['POST'])
+def add_want_to_read(user_id):
     """Add book to want_to_read list."""
 
     if not g.user:
@@ -181,16 +186,80 @@ def add_want_to_read():
 
     user = g.user
 
+    # Add the relationship between book id and and user id to db
     user.want_to_read.append(new_book)
     db.session.commit()
     
     flash('Added to the list!', 'success')
 
-    return redirect(f'/users/{user.id}/to_read_list')
+    return redirect(f'/users/{user.id}/want_to_read')
+
+
+@app.route('/users/<int:user_id>/want_to_read/<int:book_id>/delete', methods=['POST'])
+def remove_want_to_read(user_id, book_id):
+    """Remove the book from want_to_read list."""
+
+    user = User.query.get_or_404(user_id)
+    book = Book.query.get_or_404(book_id)
+    user.want_to_read.remove(book)
+    db.session.commit()
+
+    return redirect(f'/users/{user.id}/want_to_read')
+
+
+@app.route('/users/<int:user_id>/add_currently_reading', methods=['POST'])
+def add_currently_reading():
+    """Add book to currently_reading list."""
+
+    if not g.user:
+        flash("Access unauthorized.", 'danger')
+        return redirect('/')
+
+    data = {}
+    for key, value in request.form.items():
+        print("item: {0}, data: {1}".format(key, value))
+        data[key] = value
+    
+    # Create author data in db
+    authors = ast.literal_eval(data['author'])
+
+    User.create_author_data(authors)
+
+    # Create category data in db
+    categories = ast.literal_eval(data['category'])
+
+    User.create_category_data(categories)
+
+    publisher = data['publisher']
+    if not Publisher.query.filter(Publisher.publisher == publisher).first():
+        new_publisher = Publisher(publisher=publisher)
+        db.session.add(new_publisher)
+        db.session.commit()
+
+    # Create book data in db
+    title = data['title']
+    subtitle = data['subtitle']
+    thumbnail = data['thumbnail']
+
+    publisher = Publisher.query.filter_by(publisher=publisher).first()
+
+    User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
+    new_book = User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
+
+    user = g.user
+
+    # Add the relationship between book id and and user id to db
+    user.currently_reading.append(new_book)
+    db.session.commit()
+    
+    flash('Added to the list!', 'success')
+
+    return redirect(f'/users/{user.id}/currently_reading')
+
 
 
 ##########################################################
-# Users
+# User
 ##########################################################
 
 @app.route('/users/<int:user_id>')
@@ -201,9 +270,37 @@ def users_show(user_id):
     return render_template('users/show.html', user=user)
 
 
-@app.route('/users/<int:user_id>/to_read_list')
-def show_to_read(user_id):
-    """Show user's to_read list."""
+@app.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
+def user_edit(user_id):
+    """Show user profile edit page."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect('/')
+
+    user = User.query.get_or_404(user_id)
+    form = UserEditForm()
+
+    if form.validate_on_submit():
+
+        if User.authenticate(user.username, form.password.data):
+
+            user.username = form.username.data
+            user.email = form.email.data
+            user.image_url = form.image_url.data or '/static/images/user.png'
+            user.bio = form.bio.data
+            db.session.commit()
+
+        flash('User profile has been edited!', 'success')
+        return redirect(f'/users/{user.id}')
+    else:
+        return render_template(f'/users/edit.html', form=form, user=user)
+
+
+
+@app.route('/users/<int:user_id>/want_to_read')
+def show_want_to_read(user_id):
+    """Show user's want_to_read list."""
 
     if not g.user:
         flash("Access unauthorized.", 'danger')
@@ -212,3 +309,18 @@ def show_to_read(user_id):
     user = User.query.get_or_404(user_id)
 
     return render_template('users/list_want_to_read.html', user=user)
+
+
+
+@app.route('/users/<int:user_id>/currently_reading')
+def show_currently_reading(user_id):
+    """Show user's currently_reading list."""
+
+    if not g.user:
+        flash("Access unauthorized.", 'danger')
+        return redirect('/')
+    
+    user = User.query.get_or_404(user_id)
+
+    return render_template('users/list_currently_reading.html', user=user)
+

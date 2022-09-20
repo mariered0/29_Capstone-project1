@@ -5,13 +5,13 @@
 {% block content %}
 <div class="row">
     <div class="col-2">
-        <a href="#Go to edit profile"><img src="{{ user.image_url }}" alt="user's profile image"
+        <a href="/users/{{ user.id }}/edit"><img src="{{ user.image_url }}" alt="user's profile image"
                 class="img-thumbnail rounded-circle float-right mt-3" style="width: auto; height: 150px;"></a>
     </div>
     <div class="col-10">
         <div>
             <h2>{{ user.username }}
-                <a href="#Go to edit profile" class="text-muted inline edit_profile"><i
+                <a href="/users/{{ user.id }}/edit" class="text-muted inline edit_profile"><i
                         class="fa-solid fa-pen-to-square"></i></a>
             </h2>
             <hr>
@@ -21,7 +21,8 @@
             <p>{{ user.bio }}</p>
         </div>
         {% endif %}
-        {% if user %}
+        {% if user.want_to_read %}
+        <h2>Want to Read</h2>
         {% for book in user.want_to_read %}
         <div class="media" id="want_to_read_div">
             <li class="media mt-3">
@@ -31,6 +32,13 @@
                     <h5>
                         {{ book.title }}
                         {{ ': ' + book.subtitle if book.subtitle }}
+                        {% if g.user %}
+                        <form action="/users/{{ user.id }}/want_to_read/{{ book.id }}/delete" method="POST" class="delete-form d-inline">
+                            <button class="btn btn-sm btn-secondary">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                        </form>
+                        {% endif %}
                     </h5>
                     <h6 class="card-subtitle mb-2 text-muted">
                         by
