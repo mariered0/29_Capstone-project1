@@ -30,19 +30,19 @@
 
         <h5>{{ user.username }}'s bookshelves:</h5>
             <ul style="list-style: none;">
-                {% if user.want_to_read %}
+                {% if user.want_to_read|length > 0 %}
                 <li>
                     <a href="/users/{{ user.id }}/want_to_read"><i class="fa-solid fa-book"></i> Books to read</a>
                 </li>
                 {% endif %}
-                {% if user %}
+                {% if user.currently_reading|length > 0 %}
                 <li>
                     <a href="/users/{{ user.id }}/currently_reading"><i class="fa-solid fa-book"></i> Books currently reading</a>
                 </li>
                 {% endif %}
-                {% if user %}
+                {% if user.read|length > 0 %}
                 <li>
-                    <a href="#Go to read list"><i class="fa-solid fa-book"></i> Books read</a>
+                    <a href="/users/{{ user.id }}/read"><i class="fa-solid fa-book"></i> Books read</a>
                 </li>
                 {% endif %}
 

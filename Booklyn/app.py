@@ -164,11 +164,19 @@ def add_want_to_read(user_id):
     User.create_author_data(authors)
 
     # Create category data in db
-    categories = ast.literal_eval(data['category'])
+    if len(data['category']) is 0:
+        categories = ['N/A']
+    else:
+        categories = ast.literal_eval(data['category'])
 
     User.create_category_data(categories)
 
     publisher = data['publisher']
+
+    # if data['publisher'] == '':
+    #     print('publisher', publisher)
+    #     print('***************************')
+    #     publisher = 'N/A'
     if not Publisher.query.filter(Publisher.publisher == publisher).first():
         new_publisher = Publisher(publisher=publisher)
         db.session.add(new_publisher)
@@ -208,7 +216,7 @@ def remove_want_to_read(user_id, book_id):
 
 
 @app.route('/users/<int:user_id>/add_currently_reading', methods=['POST'])
-def add_currently_reading():
+def add_currently_reading(user_id):
     """Add book to currently_reading list."""
 
     if not g.user:
@@ -226,8 +234,11 @@ def add_currently_reading():
     User.create_author_data(authors)
 
     # Create category data in db
-    categories = ast.literal_eval(data['category'])
-
+    if len(data['category']) is 0:
+        categories = ['N/A']
+    else:
+        categories = ast.literal_eval(data['category'])
+    
     User.create_category_data(categories)
 
     publisher = data['publisher']
@@ -255,6 +266,84 @@ def add_currently_reading():
     flash('Added to the list!', 'success')
 
     return redirect(f'/users/{user.id}/currently_reading')
+
+
+@app.route('/users/<int:user_id>/currently_reading/<int:book_id>/delete', methods=['POST'])
+def remove_currently_reading(user_id, book_id):
+    """Remove the book from currently_reading list."""
+
+    user = User.query.get_or_404(user_id)
+    book = Book.query.get_or_404(book_id)
+    user.currently_reading.remove(book)
+    db.session.commit()
+
+    return redirect(f'/users/{user.id}/currently_reading')
+
+
+@app.route('/users/<int:user_id>/add_read', methods=['POST'])
+def add_read(user_id):
+    """Add book to read list."""
+
+    if not g.user:
+        flash("Access unauthorized.", 'danger')
+        return redirect('/')
+
+    data = {}
+    for key, value in request.form.items():
+        print("item: {0}, data: {1}".format(key, value))
+        data[key] = value
+    
+    # Create author data in db
+    authors = ast.literal_eval(data['author'])
+
+    User.create_author_data(authors)
+
+    # Create category data in db
+    if len(data['category']) is 0:
+        categories = ['N/A']
+    else:
+        categories = ast.literal_eval(data['category'])
+
+    User.create_category_data(categories)
+
+    publisher = data['publisher']
+    if not Publisher.query.filter(Publisher.publisher == publisher).first():
+        new_publisher = Publisher(publisher=publisher)
+        db.session.add(new_publisher)
+        db.session.commit()
+
+    # Create book data in db
+    title = data['title']
+    subtitle = data['subtitle']
+    thumbnail = data['thumbnail']
+
+    publisher = Publisher.query.filter_by(publisher=publisher).first()
+
+    User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
+    new_book = User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
+
+    user = g.user
+
+    # Add the relationship between book id and and user id to db
+    print('new_book', new_book)
+    user.read.append(new_book)
+    db.session.commit()
+    
+    flash('Added to the list!', 'success')
+
+    return redirect(f'/users/{user.id}/read')
+
+
+@app.route('/users/<int:user_id>/read/<int:book_id>/delete', methods=['POST'])
+def remove_read(user_id, book_id):
+    """Remove the book from read list."""
+
+    user = User.query.get_or_404(user_id)
+    book = Book.query.get_or_404(book_id)
+    user.read.remove(book)
+    db.session.commit()
+
+    return redirect(f'/users/{user.id}/read')
 
 
 
@@ -323,4 +412,35 @@ def show_currently_reading(user_id):
     user = User.query.get_or_404(user_id)
 
     return render_template('users/list_currently_reading.html', user=user)
+
+
+
+@app.route('/users/<int:user_id>/read')
+def show_read(user_id):
+    """Show user's read list."""
+
+    if not g.user:
+        flash("Access unauthorized.", 'danger')
+        return redirect('/')
+    
+    user = User.query.get_or_404(user_id)
+
+    return render_template('users/list_read.html', user=user)
+
+
+##########################################################
+# Book
+##########################################################
+
+@app.route('/books/<volumeId>', methods=['GET'])
+def show_book(volumeId):
+    """Show book detail page."""
+
+    user = g.user
+
+    res = requests.get(f'{url}/volumes/{volumeId}', params={'key': GOOGLE_BOOKS_API_KEY} )
+    result = res.json()
+    desc = result['volumeInfo']['description']
+
+    return render_template('book.html', result=result, user=user, desc=desc)
 
