@@ -49,6 +49,7 @@
           Add to List
         </button>
         <div class="dropdown-menu">
+
           <form action="/users/{{ user.id }}/add_want_to_read" method="POST">
             <input type="hidden" name="author" value="{{ book.volumeInfo.authors }}">
             <input type="hidden" name="publisher" value="{{ book.volumeInfo.publisher }}">

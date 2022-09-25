@@ -23,6 +23,11 @@
     font-size: 15vw;
 }
 
+.background{
+    height: 100vh;
+    background-color: #1A5A75;
+}
+
 .star-rating{
     color: #bebebe;
     font-size:1.5em;
