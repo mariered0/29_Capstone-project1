@@ -24,11 +24,29 @@
 }
 
 .background{
-    height: 100vh;
-    background-color: #1A5A75;
+    font-family: serif;
+    color: #B9C6CC;
+    height: 100%;
+    background-image: url('/static/images/home_background.jpg');
+
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.middle-bar{
+    background-color: #1D6686;
+    height: 100%;
+
 }
 
 .star-rating{
     color: #bebebe;
     font-size:1.5em;
+}
+
+/* search_result page */
+.book_not_available_img{
+    max-width: 130px;
+    max-height: 350px;
 }

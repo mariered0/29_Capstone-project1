@@ -122,8 +122,6 @@ class Favorite(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), primary_key=True)
 
 
-
-
 class User(db.Model):
     """Users."""
 
@@ -227,11 +225,10 @@ class User(db.Model):
         """ """
 
         # Create book data in db
-
         publisher_id=publisher.id
 
         if not Book.query.filter_by(title=title).first():
-            new_book = Book(title=title, subtitle=subtitle, thumbnail=thumbnail, publisher_id=publisher_id)
+            new_book = Book(title=title, subtitle=subtitle, thumbnail=thumbnail or User.thumbnail.default.arg, publisher_id=publisher_id)
             db.session.add(new_book)
             db.session.commit()
 
