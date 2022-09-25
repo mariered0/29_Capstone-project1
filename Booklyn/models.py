@@ -146,6 +146,13 @@ class User(db.Model):
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
+    def want_to_read_imgs(self, user):
+        """Images of books the user wants to read."""
+
+        books = [book.thumbnail for book in user.want_to_read]
+        print('thumbnails', books)
+        return books;
+
 
     @classmethod
     def signup(cls, username, password, email, image_url):

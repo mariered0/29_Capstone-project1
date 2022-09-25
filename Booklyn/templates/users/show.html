@@ -22,9 +22,18 @@
         </div>
         {% endif %}
         
-        {% if user.favorites %}
-        <div id="favorites_div">
-            <p>{{ user.favorites }}</p>
+        {% if user.favorite|length > 0 %}
+        <div id="favorite_div">
+
+            <p>{{ user.username }}'s <a href="/users/{{ user.id }}/favorite"><i class="fa-solid fa-book"></i>favorite books</a>:</p>
+            <ul>
+                {% for book in user.favorite %}
+                <li>
+                    
+                    {{ book.title }}
+                </li>
+                {% endfor %}
+            </ul>
         </div>
         {% endif %}
 

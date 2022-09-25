@@ -43,6 +43,8 @@ def search():
 
     search = request.args.get('q')
     # print(GOOGLE_BOOKS_API_KEY)
+
+
     res = requests.get(f'{url}/volumes', params={'key': GOOGLE_BOOKS_API_KEY, 'q': search} )
     result = res.json()
 
@@ -80,7 +82,10 @@ def do_logout():
 @app.route('/')
 def home_page():
     """Show homepage."""
-    return render_template('home.html')
+
+    user = g.user
+
+    return render_template('home.html', user=user)
 
 
 @app.route('/signup', methods=["GET", "POST"])
@@ -173,10 +178,6 @@ def add_want_to_read(user_id):
 
     publisher = data['publisher']
 
-    # if data['publisher'] == '':
-    #     print('publisher', publisher)
-    #     print('***************************')
-    #     publisher = 'N/A'
     if not Publisher.query.filter(Publisher.publisher == publisher).first():
         new_publisher = Publisher(publisher=publisher)
         db.session.add(new_publisher)
@@ -345,6 +346,71 @@ def remove_read(user_id, book_id):
 
     return redirect(f'/users/{user.id}/read')
 
+@app.route('/users/<int:user_id>/add_favorite', methods=['POST'])
+def add_favorite(user_id):
+    """Add book to favorite list."""
+
+    if not g.user:
+        flash("Access unauthorized.", 'danger')
+        return redirect('/')
+
+    data = {}
+    for key, value in request.form.items():
+        print("item: {0}, data: {1}".format(key, value))
+        data[key] = value
+    
+    # Create author data in db
+    authors = ast.literal_eval(data['author'])
+
+    User.create_author_data(authors)
+
+    # Create category data in db
+    if len(data['category']) is 0:
+        categories = ['N/A']
+    else:
+        categories = ast.literal_eval(data['category'])
+
+    User.create_category_data(categories)
+
+    publisher = data['publisher']
+    if not Publisher.query.filter(Publisher.publisher == publisher).first():
+        new_publisher = Publisher(publisher=publisher)
+        db.session.add(new_publisher)
+        db.session.commit()
+
+    # Create book data in db
+    title = data['title']
+    subtitle = data['subtitle']
+    thumbnail = data['thumbnail']
+
+    publisher = Publisher.query.filter_by(publisher=publisher).first()
+
+    User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
+    new_book = User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
+
+    user = g.user
+
+    # Add the relationship between book id and and user id to db
+    print('new_book', new_book)
+    user.favorite.append(new_book)
+    db.session.commit()
+    
+    flash('Added to the list!', 'success')
+
+    return redirect(f'/users/{user.id}/favorite')
+
+
+@app.route('/users/<int:user_id>/favorite/<int:book_id>/delete', methods=['POST'])
+def remove_favorite(user_id, book_id):
+    """Remove the book from favorite list."""
+
+    user = User.query.get_or_404(user_id)
+    book = Book.query.get_or_404(book_id)
+    user.favorite.remove(book)
+    db.session.commit()
+
+    return redirect(f'/users/{user.id}/favorite')
+
 
 
 ##########################################################
@@ -426,6 +492,20 @@ def show_read(user_id):
     user = User.query.get_or_404(user_id)
 
     return render_template('users/list_read.html', user=user)
+
+
+
+@app.route('/users/<int:user_id>/favorite')
+def show_favorite(user_id):
+    """Show user's favorite list."""
+
+    if not g.user:
+        flash("Access unauthorized.", 'danger')
+        return redirect('/')
+    
+    user = User.query.get_or_404(user_id)
+
+    return render_template('users/list_favorite.html', user=user)
 
 
 ##########################################################

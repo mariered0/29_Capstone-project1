@@ -4,16 +4,21 @@
 
 {% block content %}
 
-<p>
-    {{result.volumeInfo.title}}
-</p>
-
 <div class="row">
-    <div class="col-2">
-        <img src="{{ result.volumeInfo.imageLinks['thumbnail'] }}" alt="book cover image" class="float-right mt-3"
+    <div class="col-sm-12 col-lg-3">
+        <img src="{{ result.volumeInfo.imageLinks['thumbnail'] }}" alt="book cover image" class="mt-3"
             style="width: auto; height: 300px;">
 
-            <div class="btn-group">
+        <div id="star_div" class="col-md-auto mt-3">
+            <p class="star-rating">
+                <i class="fa-regular fa-star" data-star="1"></i>
+                <i class="fa-regular fa-star" data-star="2"></i>
+                <i class="fa-regular fa-star" data-star="3"></i>
+                <i class="fa-regular fa-star" data-star="4"></i>
+                <i class="fa-regular fa-star" data-star="5"></i>
+            </p>
+        </div>
+        <!-- <div class="btn-group">
                 <button class="btn btn-info btn dropdown-toggle mt-3" type="button" data-toggle="dropdown" aria-haspopup="true"
                   aria-expanded="false">
                   Add to List
@@ -60,9 +65,9 @@
                     <button class="dropdown-item">Read</button>
                   </form>
                 </div>
-              </div>
+              </div> -->
     </div>
-    <div class="col-10">
+    <div class="col-9">
         <div>
             <h2>
                 {{ result.volumeInfo.title }}
@@ -80,11 +85,11 @@
         <p>{{ desc|safe }}</p>
 
         <p class="card-subtitle mb-2 text-muted">
-        Genre:
-        {% for category in result.volumeInfo.categories %}
-        {{ category }}
-        {{ "," if not loop.last else "" }}
-        {% endfor %}
+            Genre:
+            {% for category in result.volumeInfo.categories %}
+            {{ category }}
+            {{ "," if not loop.last else "" }}
+            {% endfor %}
         </p>
 
     </div>

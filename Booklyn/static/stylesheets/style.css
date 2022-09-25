@@ -1,3 +1,29 @@
-.edit_profile {
+/* .edit_profile {
     white-space: nowrap;
+} */
+
+.navbar{
+    background: #B9C6CC;
+}
+
+
+.home{
+    height: 100vh;
+    background-image: url('/static/images/home_background.jpg');
+
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#home-title{
+    font-family: serif;
+    /* 'Space Mono', monospace; */
+    color: #CE7A12;
+    font-size: 15vw;
+}
+
+.star-rating{
+    color: #bebebe;
+    font-size:1.5em;
 }
