@@ -1,9 +1,9 @@
 """SQLAlchemy models for Booklyn."""
 
-# from datetime import datetime
 
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 import ast
 
@@ -93,6 +93,7 @@ class WantToRead(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="cascade"), primary_key=True)
     book_id = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), primary_key=True)
+    date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     
 
 class CurrentlyReading(db.Model):
@@ -102,6 +103,7 @@ class CurrentlyReading(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="cascade"), primary_key=True)
     book_id = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), primary_key=True)
+    date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
 
 
 class Read(db.Model):
@@ -111,6 +113,7 @@ class Read(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="cascade"), primary_key=True)
     book_id = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), primary_key=True)
+    date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
 
 
 class Favorite(db.Model):
@@ -120,6 +123,7 @@ class Favorite(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="cascade"), primary_key=True)
     book_id = db.Column(db.Integer, db.ForeignKey('books.id', ondelete="cascade"), primary_key=True)
+    date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
 
 
 class User(db.Model):
@@ -269,9 +273,11 @@ class Review(db.Model):
     __tablename__ = 'reviews'
 
     id = db.Column(db.Integer, primary_key=True)
-    review = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    review = db.Column(db.Text, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="CASCADE"), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
+    date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     
 
 
