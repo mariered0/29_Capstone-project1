@@ -3,136 +3,145 @@
 {% block title %}Search Result{% endblock %}
 
 {% block content %}
+<div class="middle-bar">
 
-<ul class="list-unstyled ">
-  {% if result %}
-  <p>Found {{ result['items']|length }} books with the title "{{ search }}." </p>
-  {% for book in result['items'] %}
-  <li class="media mt-3" id="book-li">
-    <a href="/books/{{ book.id }}">
-      {% if book.volumeInfo.imageLinks %}
-      <img src="{{ book.volumeInfo.imageLinks.thumbnail }}" class="mr-3" id="book-thumnail-img" alt="book cover not available image">
-    </a>
-    {% else %}
-    <img src="/static/images/cover-not-available.png" class="mt-5 mr-3 book_not_available_img" alt="generic book image">
-    </a>
-    {% endif %}
-    <div class="media-body">
+  <ul class="list-unstyled ">
+    {% if result %}
 
+    <p>Found {{ result['items']|length }} books with the title "{{ search }}." </p>
+    {% for book in result['items'] %}
+    <li class="media mt-3" id="book-li">
       <a href="/books/{{ book.id }}">
-        <h5 class="mt-0 mb-1 text-dark">
-          {{ book.volumeInfo.title }}
-          {{ ': ' + book.volumeInfo.subtitle if book.volumeInfo.subtitle }}
-        </h5>
+        {% if book.volumeInfo.imageLinks %}
+        <img src="{{ book.volumeInfo.imageLinks.thumbnail }}" class="mr-3" id="book-thumnail-img"
+          alt="book cover not available image">
       </a>
+      {% else %}
+      <img src="/static/images/cover-not-available.png" class="mt-5 mr-3 book_not_available_img"
+        alt="generic book image">
+      </a>
+      {% endif %}
+      <div class="media-body">
 
-      <h6 class="card-subtitle mb-2 text-muted">
-        by
-        {% for author in book.volumeInfo.authors %}
-        {{ author }}
-        {{ "," if not loop.last else "" }}
-        {% endfor %}
-      </h6>
-      <p class="card-text">
-        {{ book.volumeInfo.description | truncate(300)}}
-      </p>
-      <p class="card-subtitle mb-2 text-muted">
-        Genre:
-        {% for category in book.volumeInfo.categories %}
-        {{ category }}
-        {{ "," if not loop.last else "" }}
-        {% endfor %}
-      </p>
-      <p class="card-subtitle mb-2 text-muted">
-        Publisher:
-        {{ book.volumeInfo.publisher }}
-      </p>
-      <div class="btn-group">
-        <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
-          aria-expanded="false">
-          Add to List
-        </button>
-        <div class="dropdown-menu">
+        <a href="/books/{{ book.id }}">
+          <h5 class="mt-0 mb-1 text-dark">
+            {{ book.volumeInfo.title }}
+            {{ ': ' + book.volumeInfo.subtitle if book.volumeInfo.subtitle }}
+          </h5>
+        </a>
 
-          <form action="/users/{{ user.id }}/add_want_to_read" method="POST">
-            <input type="hidden" name="author" value="{{ book.volumeInfo.authors }}">
-            <input type="hidden" name="publisher" value="{{ book.volumeInfo.publisher }}">
-            <input type="hidden" name="category" value="{{ book.volumeInfo.categories }}">
-
-            <input type="hidden" name="title" value="{{ book.volumeInfo.title }}">
-            <input type="hidden" name="subtitle" value="{{ book.volumeInfo.subtitle }}">
-            <input type="hidden" name="published_date" value="{{ book.volumeInfo.publishedDate }}">
-            {% if book.volumeInfo.imageLinks %}
-            <input type="hidden" name="thumbnail" value="{{ book.volumeInfo.imageLinks.thumbnail }}">
-            {% else %}
-            <input type="hidden" name="thumbnail" value="/static/images/cover-not-available.png">
-            {% endif %}
-
-            <button class="dropdown-item">Want to Read</button>
-          </form>
-
-          <form action="/users/{{ user.id }}/add_currently_reading" method="POST">
-            <input type="hidden" name="author" value="{{ book.volumeInfo.authors }}">
-            <input type="hidden" name="publisher" value="{{ book.volumeInfo.publisher }}">
-            <input type="hidden" name="category" value="{{ book.volumeInfo.categories }}">
-
-            <input type="hidden" name="title" value="{{ book.volumeInfo.title }}">
-            <input type="hidden" name="subtitle" value="{{ book.volumeInfo.subtitle }}">
-            <input type="hidden" name="published_date" value="{{ book.volumeInfo.publishedDate }}">
-            {% if book.volumeInfo.imageLinks %}
-            <input type="hidden" name="thumbnail" value="{{ book.volumeInfo.imageLinks.thumbnail }}">
-            {% else %}
-            <input type="hidden" name="thumbnail" value="/static/images/cover-not-available.png">
-            {% endif %}
-
-            <button class="dropdown-item">Currently Reading</button>
-          </form>
+        <h6 class="card-subtitle mb-2 text-muted">
+          by
+          {% for author in book.volumeInfo.authors %}
+          {{ author }}
+          {{ "," if not loop.last else "" }}
+          {% endfor %}
+        </h6>
+        <p class="card-text">
+          {{ book.volumeInfo.description | truncate(300)}}
+        </p>
+        <p class="card-subtitle mb-2 text-muted">
+          Genre:
+          {% for category in book.volumeInfo.categories %}
+          {{ category }}
+          {{ "," if not loop.last else "" }}
+          {% endfor %}
+        </p>
+        <p class="card-subtitle mb-2 text-muted">
+          Publisher:
+          {{ book.volumeInfo.publisher }}
+        </p>
 
 
 
-          <form action="/users/{{ user.id }}/add_read" method="POST">
-            <input type="hidden" name="author" value="{{ book.volumeInfo.authors }}">
-            <input type="hidden" name="publisher" value="{{ book.volumeInfo.publisher }}">
-            <input type="hidden" name="category" value="{{ book.volumeInfo.categories }}">
+        <div class="btn-group">
+          <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            Add to List
+          </button>
+          <div class="dropdown-menu">
 
-            <input type="hidden" name="title" value="{{ book.volumeInfo.title }}">
-            <input type="hidden" name="subtitle" value="{{ book.volumeInfo.subtitle }}">
-            <input type="hidden" name="published_date" value="{{ book.volumeInfo.publishedDate }}">
-            {% if book.volumeInfo.imageLinks %}
-            <input type="hidden" name="thumbnail" value="{{ book.volumeInfo.imageLinks.thumbnail }}">
-            {% else %}
-            <input type="hidden" name="thumbnail" value="/static/images/cover-not-available.png">
-            {% endif %}
+            <form action="/users/{{ user.id }}/add_want_to_read" method="POST">
+              <input type="hidden" name="author" value="{{ book.volumeInfo.authors }}">
+              <input type="hidden" name="publisher" value="{{ book.volumeInfo.publisher }}">
+              <input type="hidden" name="category" value="{{ book.volumeInfo.categories }}">
 
-            <button class="dropdown-item">Read</button>
-          </form>
+              <input type="hidden" name="title" value="{{ book.volumeInfo.title }}">
+              <input type="hidden" name="subtitle" value="{{ book.volumeInfo.subtitle }}">
+              <input type="hidden" name="published_date" value="{{ book.volumeInfo.publishedDate }}">
+              {% if book.volumeInfo.imageLinks %}
+              <input type="hidden" name="thumbnail" value="{{ book.volumeInfo.imageLinks.thumbnail }}">
+              {% else %}
+              <input type="hidden" name="thumbnail" value="/static/images/cover-not-available.png">
+              {% endif %}
+
+              <button class="dropdown-item">Want to Read</button>
+            </form>
+
+            <form action="/users/{{ user.id }}/add_currently_reading" method="POST">
+              <input type="hidden" name="author" value="{{ book.volumeInfo.authors }}">
+              <input type="hidden" name="publisher" value="{{ book.volumeInfo.publisher }}">
+              <input type="hidden" name="category" value="{{ book.volumeInfo.categories }}">
+
+              <input type="hidden" name="title" value="{{ book.volumeInfo.title }}">
+              <input type="hidden" name="subtitle" value="{{ book.volumeInfo.subtitle }}">
+              <input type="hidden" name="published_date" value="{{ book.volumeInfo.publishedDate }}">
+              {% if book.volumeInfo.imageLinks %}
+              <input type="hidden" name="thumbnail" value="{{ book.volumeInfo.imageLinks.thumbnail }}">
+              {% else %}
+              <input type="hidden" name="thumbnail" value="/static/images/cover-not-available.png">
+              {% endif %}
+
+              <button class="dropdown-item">Currently Reading</button>
+            </form>
+
+
+
+            <form action="/users/{{ user.id }}/add_read" method="POST">
+              <input type="hidden" name="author" value="{{ book.volumeInfo.authors }}">
+              <input type="hidden" name="publisher" value="{{ book.volumeInfo.publisher }}">
+              <input type="hidden" name="category" value="{{ book.volumeInfo.categories }}">
+
+              <input type="hidden" name="title" value="{{ book.volumeInfo.title }}">
+              <input type="hidden" name="subtitle" value="{{ book.volumeInfo.subtitle }}">
+              <input type="hidden" name="published_date" value="{{ book.volumeInfo.publishedDate }}">
+              {% if book.volumeInfo.imageLinks %}
+              <input type="hidden" name="thumbnail" value="{{ book.volumeInfo.imageLinks.thumbnail }}">
+              {% else %}
+              <input type="hidden" name="thumbnail" value="/static/images/cover-not-available.png">
+              {% endif %}
+
+              <button class="dropdown-item">Read</button>
+            </form>
 
 
 
 
-          <form action="/users/{{ user.id }}/add_favorite" method="POST">
-            <input type="hidden" name="author" value="{{ book.volumeInfo.authors }}">
-            <input type="hidden" name="publisher" value="{{ book.volumeInfo.publisher }}">
-            <input type="hidden" name="category" value="{{ book.volumeInfo.categories }}">
+            <form action="/users/{{ user.id }}/add_favorite" method="POST">
+              <input type="hidden" name="author" value="{{ book.volumeInfo.authors }}">
+              <input type="hidden" name="publisher" value="{{ book.volumeInfo.publisher }}">
+              <input type="hidden" name="category" value="{{ book.volumeInfo.categories }}">
 
-            <input type="hidden" name="title" value="{{ book.volumeInfo.title }}">
-            <input type="hidden" name="subtitle" value="{{ book.volumeInfo.subtitle }}">
-            <input type="hidden" name="published_date" value="{{ book.volumeInfo.publishedDate }}">
-            {% if book.volumeInfo.imageLinks %}
-            <input type="hidden" name="thumbnail" value="{{ book.volumeInfo.imageLinks.thumbnail }}">
-            {% else %}
-            <input type="hidden" name="thumbnail" value="/static/images/cover-not-available.png">
-            {% endif %}
+              <input type="hidden" name="title" value="{{ book.volumeInfo.title }}">
+              <input type="hidden" name="subtitle" value="{{ book.volumeInfo.subtitle }}">
+              <input type="hidden" name="published_date" value="{{ book.volumeInfo.publishedDate }}">
+              {% if book.volumeInfo.imageLinks %}
+              <input type="hidden" name="thumbnail" value="{{ book.volumeInfo.imageLinks.thumbnail }}">
+              {% else %}
+              <input type="hidden" name="thumbnail" value="/static/images/cover-not-available.png">
+              {% endif %}
 
-            <button class="dropdown-item">Favorite</button>
-          </form>
+              <button class="dropdown-item">Favorite</button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
 
-  </li>
-  {% endfor %}
-  {% endif %}
-</ul>
+    </li>
 
+
+    {% endfor %}
+    {% endif %}
+  </ul>
+</div>
 {% endblock %}

@@ -3,7 +3,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 
-from forms import UserAddForm, LoginForm, UserEditForm
+from forms import BookReviewForm, UserAddForm, LoginForm, UserEditForm, BookReviewForm
 from secret import GOOGLE_BOOKS_API_KEY
 from models import db, connect_db, User, Author, Publisher, Category, Book, Review
 
@@ -45,7 +45,7 @@ def search():
     # print(GOOGLE_BOOKS_API_KEY)
 
 
-    res = requests.get(f'{url}/volumes', params={'key': GOOGLE_BOOKS_API_KEY, 'q': search} )
+    res = requests.get(f'{url}/volumes', params={'key': GOOGLE_BOOKS_API_KEY, 'q': search, 'maxResults': 40} )
     result = res.json()
 
     return render_template('search_result.html', result=result, search=search, user=user)
@@ -463,7 +463,7 @@ def show_want_to_read(user_id):
     
     user = User.query.get_or_404(user_id)
 
-    return render_template('users/list_want_to_read.html', user=user)
+    return render_template('users/lists/list_want_to_read.html', user=user)
 
 
 
@@ -477,7 +477,7 @@ def show_currently_reading(user_id):
     
     user = User.query.get_or_404(user_id)
 
-    return render_template('users/list_currently_reading.html', user=user)
+    return render_template('users/lists/list_currently_reading.html', user=user)
 
 
 
@@ -491,7 +491,7 @@ def show_read(user_id):
     
     user = User.query.get_or_404(user_id)
 
-    return render_template('users/list_read.html', user=user)
+    return render_template('users/lists/list_read.html', user=user)
 
 
 
@@ -505,7 +505,35 @@ def show_favorite(user_id):
     
     user = User.query.get_or_404(user_id)
 
-    return render_template('users/list_favorite.html', user=user)
+    return render_template('users/lists/list_favorite.html', user=user)
+
+
+@app.route('/users/<int:user_id>/review/<int:book_id>')
+def write_review(user_id, book_id):
+    """Show a page to write review for a book."""
+
+    if not g.user:
+        flash("Access unauthorized.", 'danger')
+        return redirect('/')
+
+    user = User.query.get_or_404(user_id)
+    book = Book.query.get_or_404(book_id)
+    form = BookReviewForm()
+
+    if form.validate_on_submit():
+        review = Review(user_id=user_id, book_id=book_id, rating=form.rating.data, review=form.review.data)
+        db.session.commit()
+
+        redirect('/')
+    
+    return render_template('/users/reviews/review.html', form=form)
+
+    
+
+    
+    user = User.query.get_or_404(user_id)
+
+    return render_template('/users/list_favorite.html', user=user)
 
 
 ##########################################################

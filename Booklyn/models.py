@@ -33,7 +33,7 @@ class Author(db.Model):
     author = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
-        return f"<User #{self.id}: {self.author}, {self.books}>"
+        return f"<Author #{self.id}: {self.author}>"
 
 class Publisher(db.Model):
     """Publishers for books."""
@@ -65,7 +65,7 @@ class Book(db.Model):
     publisher = db.relationship('Publisher', backref='books', primaryjoin='Publisher.id==Book.publisher_id')
 
     def __repr__(self):
-        return f"<User #{self.id}: {self.title}, {self.authors}, {self.categories}>"
+        return f"<Book #{self.id}: {self.title}, {self.authors}, {self.categories}>"
 
 
 class BookAuthor(db.Model):
@@ -244,9 +244,8 @@ class User(db.Model):
                     db.session.commit()
             else:
                 author = Author.query.filter(Author.author == authors[0]).first()
-                if new_book.authors == None:
-                    new_book.authors.append(author)
-                    db.session.commit()
+                new_book.authors.append(author)
+                db.session.commit()
 
         # Create books_categories relationship
             if len(categories) != 1:

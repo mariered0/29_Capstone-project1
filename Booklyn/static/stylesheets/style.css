@@ -2,10 +2,22 @@
     white-space: nowrap;
 } */
 
+/* ****************************************
+navbar
+***************************************** */
+
 .navbar{
     background: #B9C6CC;
 }
 
+/* Booklyn logo in nav bar */
+.navbar-brand{
+    font-family: serif;
+}
+
+/* ****************************************
+home page
+***************************************** */
 
 .home{
     height: 100vh;
@@ -23,7 +35,9 @@
     font-size: 15vw;
 }
 
-.background{
+
+
+/* .background{
     font-family: serif;
     color: #B9C6CC;
     height: 100%;
@@ -32,18 +46,32 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-}
+} */
 
-.middle-bar{
+/* User profile page */
+/* .middle-bar{
     background-color: #1D6686;
     height: 100%;
+} */
 
-}
+/* .card-img-top{
+    height: 350px;
+    width: 130px;
+} */
+
+/* ****************************************
+book detail show page
+***************************************** */
 
 .star-rating{
     color: #bebebe;
     font-size:1.5em;
 }
+
+
+/* ****************************************
+search result page
+***************************************** */
 
 /* search_result page */
 .book_not_available_img{
