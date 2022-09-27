@@ -17,7 +17,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///booklyn_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #this echo allows us to see the SQL lines that happen in background
-app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 
@@ -42,11 +42,29 @@ def search():
     user = g.user
 
     search = request.args.get('q')
-    # print(GOOGLE_BOOKS_API_KEY)
+        
 
 
-    res = requests.get(f'{url}/volumes', params={'key': GOOGLE_BOOKS_API_KEY, 'q': search, 'maxResults': 40} )
+    res = requests.get(f'{url}/volumes', params={'key': GOOGLE_BOOKS_API_KEY, 'q': search, 'maxResults':40} )
     result = res.json()
+    
+    # items = []
+
+    # for book in result['items']:
+    #     check = {}
+
+    #     print('check values', check.values())
+    #     if book['volumeInfo']['title'] not in check and book['volumeInfo']['authors'] not in check:
+    #         check['title'] = {book['volumeInfo']['title']}
+    #         check['author'] = book['volumeInfo']['authors']
+    #         items.append({
+    #             'title': book['volumeInfo']['title'], 
+    #             'authors': book['volumeInfo']['authors'], 
+    #             'publisher': book['volumeInfo']['publisher'], 
+    #             'thubmnail': book['volumeInfo']['imageLinks']['thumbnail']})
+
+    # print('result', items)
+
 
     return render_template('search_result.html', result=result, search=search, user=user)
 
@@ -184,14 +202,15 @@ def add_want_to_read(user_id):
         db.session.commit()
 
     # Create book data in db
+    volumeId = data['volumeId']
     title = data['title']
     subtitle = data['subtitle']
     thumbnail = data['thumbnail']
 
     publisher = Publisher.query.filter_by(publisher=publisher).first()
 
-    User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
-    new_book = User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
+    User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
+    new_book = User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
 
     user = g.user
 
@@ -249,14 +268,15 @@ def add_currently_reading(user_id):
         db.session.commit()
 
     # Create book data in db
+    volumeId = data['volumeId']
     title = data['title']
     subtitle = data['subtitle']
     thumbnail = data['thumbnail']
 
     publisher = Publisher.query.filter_by(publisher=publisher).first()
 
-    User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
-    new_book = User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
+    User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
+    new_book = User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
 
     user = g.user
 
@@ -314,14 +334,16 @@ def add_read(user_id):
         db.session.commit()
 
     # Create book data in db
+    volumeId = data['volumeId']
     title = data['title']
     subtitle = data['subtitle']
     thumbnail = data['thumbnail']
 
+
     publisher = Publisher.query.filter_by(publisher=publisher).first()
 
-    User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
-    new_book = User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
+    User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
+    new_book = User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
 
     user = g.user
 
@@ -379,14 +401,15 @@ def add_favorite(user_id):
         db.session.commit()
 
     # Create book data in db
+    volumeId = data['volumeId']
     title = data['title']
     subtitle = data['subtitle']
     thumbnail = data['thumbnail']
 
     publisher = Publisher.query.filter_by(publisher=publisher).first()
 
-    User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
-    new_book = User.create_book_data(title, subtitle, thumbnail, authors, categories, publisher)
+    User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
+    new_book = User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
 
     user = g.user
 
@@ -551,4 +574,16 @@ def show_book(volumeId):
     desc = result['volumeInfo']['description']
 
     return render_template('book.html', result=result, user=user, desc=desc)
+
+# @app.route('/books/<int:book_id>', methods=['GET'])
+# def show_book(book_id):
+#     """Show book detail page for when the book data is alredy in db."""
+
+#     user = g.user
+
+#     res = requests.get(f'{url}/volumes/{volumeId}', params={'key': GOOGLE_BOOKS_API_KEY} )
+#     result = res.json()
+#     desc = result['volumeInfo']['description']
+
+#     return render_template('book.html', result=result, user=user, desc=desc)
 

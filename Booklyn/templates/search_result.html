@@ -17,7 +17,7 @@
           alt="book cover not available image">
       </a>
       {% else %}
-      <img src="/static/images/cover-not-available.png" class="mt-5 mr-3 book_not_available_img"
+      <img src="/static/images/cover-not-available.png" class="mt-3 mr-3 book_not_available_img"
         alt="generic book image">
       </a>
       {% endif %}
@@ -62,6 +62,7 @@
           <div class="dropdown-menu">
 
             <form action="/users/{{ user.id }}/add_want_to_read" method="POST">
+              <input type="hidden" name="volumeId" value="{{ book.id }}">
               <input type="hidden" name="author" value="{{ book.volumeInfo.authors }}">
               <input type="hidden" name="publisher" value="{{ book.volumeInfo.publisher }}">
               <input type="hidden" name="category" value="{{ book.volumeInfo.categories }}">
@@ -79,6 +80,7 @@
             </form>
 
             <form action="/users/{{ user.id }}/add_currently_reading" method="POST">
+              <input type="hidden" name="volumeId" value="{{ book.id }}">
               <input type="hidden" name="author" value="{{ book.volumeInfo.authors }}">
               <input type="hidden" name="publisher" value="{{ book.volumeInfo.publisher }}">
               <input type="hidden" name="category" value="{{ book.volumeInfo.categories }}">
@@ -98,6 +100,7 @@
 
 
             <form action="/users/{{ user.id }}/add_read" method="POST">
+              <input type="hidden" name="volumeId" value="{{ book.id }}">
               <input type="hidden" name="author" value="{{ book.volumeInfo.authors }}">
               <input type="hidden" name="publisher" value="{{ book.volumeInfo.publisher }}">
               <input type="hidden" name="category" value="{{ book.volumeInfo.categories }}">
@@ -118,6 +121,7 @@
 
 
             <form action="/users/{{ user.id }}/add_favorite" method="POST">
+              <input type="hidden" name="volumeId" value="{{ book.id }}">
               <input type="hidden" name="author" value="{{ book.volumeInfo.authors }}">
               <input type="hidden" name="publisher" value="{{ book.volumeInfo.publisher }}">
               <input type="hidden" name="category" value="{{ book.volumeInfo.categories }}">

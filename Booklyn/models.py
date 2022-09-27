@@ -52,6 +52,7 @@ class Book(db.Model):
     __tablename__ = 'books'
 
     id = db.Column(db.Integer, primary_key=True)
+    volumeId = db.Column(db.Text, nullable=False, unique=True)
     title = db.Column(db.Text, nullable=False)
     subtitle = db.Column(db.Text, nullable=True)
     thumbnail = db.Column(db.Text, default='/static/images/cover-not-available.png')
@@ -225,14 +226,14 @@ class User(db.Model):
                 db.session.commit()
 
     @classmethod
-    def create_book_data(self, title, subtitle, thumbnail, authors, categories, publisher):
+    def create_book_data(self, volumeId, title, subtitle, thumbnail, authors, categories, publisher):
         """ """
 
         # Create book data in db
         publisher_id=publisher.id
 
         if not Book.query.filter_by(title=title).first():
-            new_book = Book(title=title, subtitle=subtitle, thumbnail=thumbnail or User.thumbnail.default.arg, publisher_id=publisher_id)
+            new_book = Book(volumeId=volumeId, title=title, subtitle=subtitle, thumbnail=thumbnail or User.thumbnail.default.arg, publisher_id=publisher_id)
             db.session.add(new_book)
             db.session.commit()
 
