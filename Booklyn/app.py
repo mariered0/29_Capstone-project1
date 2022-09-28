@@ -3,9 +3,10 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 
-from forms import BookReviewForm, UserAddForm, LoginForm, UserEditForm, BookReviewForm
+from forms import UserAddForm, LoginForm, UserEditForm, BookReviewForm
 from secret import GOOGLE_BOOKS_API_KEY
 from models import db, connect_db, User, Author, Publisher, Category, Book, Review
+from werkzeug.datastructures import MultiDict
 
 import requests, ast
 
@@ -563,27 +564,50 @@ def write_review(user_id, book_id):
 # Book
 ##########################################################
 
-@app.route('/books/<volumeId>', methods=['GET'])
+@app.route('/books/<volumeId>', methods=['GET', 'POST'])
 def show_book(volumeId):
-    """Show book detail page."""
+    """Show book detail page with review form if the user already has the book in their list."""
 
     user = g.user
+    # data = MultiDict(mapping=request.form)
+    # form = BookReviewForm(data)
+    form = BookReviewForm()
 
     res = requests.get(f'{url}/volumes/{volumeId}', params={'key': GOOGLE_BOOKS_API_KEY} )
     result = res.json()
     desc = result['volumeInfo']['description']
 
-    return render_template('book.html', result=result, user=user, desc=desc)
+    book = Book.query.filter_by(volumeId=volumeId).first()
 
-# @app.route('/books/<int:book_id>', methods=['GET'])
-# def show_book(book_id):
-#     """Show book detail page for when the book data is alredy in db."""
+    if form.validate_on_submit():
 
-#     user = g.user
+        rating = form.rating.data
+        review = form.review.data
 
-#     res = requests.get(f'{url}/volumes/{volumeId}', params={'key': GOOGLE_BOOKS_API_KEY} )
-#     result = res.json()
-#     desc = result['volumeInfo']['description']
+        print('**************************')
+        print('rating', rating)
+        print('review', review)
 
-#     return render_template('book.html', result=result, user=user, desc=desc)
+        return redirect('/')
+
+
+
+    else:
+        print('not validated')
+
+
+
+    if not book:
+        return render_template('book.html', result=result, user=user, desc=desc)
+
+    # if the book is in any of the lists for the user, show review form
+    elif user.is_book_in_list(book.id):
+        return render_template('book.html', result=result, user=user, desc=desc, form=form)
+
+    
+
+    
+
+
+    
 

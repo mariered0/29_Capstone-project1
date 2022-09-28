@@ -149,12 +149,30 @@ class User(db.Model):
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
-    def want_to_read_imgs(self, user):
-        """Images of books the user wants to read."""
 
-        books = [book.thumbnail for book in user.want_to_read]
-        print('thumbnails', books)
-        return books;
+    def is_book_in_list(self, book_to_check):
+        """list of books that are in the user's lists."""
+
+        books = []
+
+        for book in self.want_to_read:
+            books.append(book.id)
+        for book in self.currently_reading:
+            books.append(book.id)
+        for book in self.favorite:
+            books.append(book.id)
+        for book in self.read:
+            books.append(book.id)
+
+        print('books', books)
+        print('*********************')
+        books_in_list = set(books)
+        print(books_in_list)
+
+        if book_to_check in books_in_list:
+            return True
+
+
 
 
     @classmethod

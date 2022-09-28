@@ -1,7 +1,7 @@
 from ast import Pass
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, RadioField
-from wtforms.validators import InputRequired, Email, Length
+from wtforms import StringField, PasswordField, TextAreaField, SelectField
+from wtforms.validators import InputRequired, Email, Length, AnyOf
 
 
 
@@ -31,6 +31,6 @@ class UserEditForm(FlaskForm):
 class BookReviewForm(FlaskForm):
     """Form for book reviews."""
 
-    rating = RadioField('Rating', validators=[InputRequired()])
+    rating = SelectField('Rating', choices=[('1', '1'), ('2', '2'), ('3','3'), ('4','4'), ('5', '5')], validators=[AnyOf(values=['1', '2', '3', '4', '5'])])
     review = TextAreaField('(Optional) Review', validators=[Length(max=500)])
 
