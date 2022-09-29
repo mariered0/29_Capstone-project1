@@ -164,12 +164,21 @@ class User(db.Model):
         for book in self.read:
             books.append(book.id)
 
-        print('books', books)
-        print('*********************')
         books_in_list = set(books)
-        print(books_in_list)
 
         if book_to_check in books_in_list:
+            return True
+
+    
+    def user_reviewed(self, book_id):
+        """Check if the user wrote review for the book."""
+
+        books_reviewed = []
+
+        for book in self.reviews:
+            books_reviewed.append(book.book_id)
+
+        if book_id in books_reviewed:
             return True
 
 
@@ -296,7 +305,11 @@ class Review(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="CASCADE"), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
     date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+
+    book = db.relationship('Book', backref='reviews')
     
+    def __repr__(self):
+        return f"<Review #{self.id}: rating: {self.rating}, review: {self.review}, user: {self.user_id}, book: {self.book_id}, date added: {self.date_added}>"
 
 
 

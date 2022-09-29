@@ -48,7 +48,33 @@
       </p>
     </div>
 
+    {% if book.reviews %}
+    <h1 class="mt-3">Reviews</h1>
+    {% for review in book.reviews %}
+
+    <div class="card mb-3">
+      <div class="row no-gutters">
+        <div class="col-md-4">
+          <div>
+          <img src="{{ review.user.image_url }}" class="card-img" alt="user image">
+        </div>
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <p>Here, show star rating</p>
+            <p class="card-text">{{ review.review }}</p>
+            <p class="card-text"><small class="text-muted">Reviewed on: {{ review.date_added.strftime('%B %d %Y') }}</small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+    {% endif %}
+
+    {% if form and not user.user_reviewed(book.id) %}
     <div>
+      <h1 class="mt-3">Write a review?</h1>
       <form method="POST" id="review_form">
         {{ form.hidden_tag() }}
     
@@ -67,6 +93,7 @@
         <button class="btn btn-primary btn-lg btn-block">Post</button>
     </form>
     </div>
+    {% endif %}
 
     
 

@@ -579,7 +579,7 @@ def show_book(volumeId):
 
     book = Book.query.filter_by(volumeId=volumeId).first()
 
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate_on_submit():
 
         rating = form.rating.data
         review = form.review.data
@@ -588,12 +588,14 @@ def show_book(volumeId):
         print('rating', rating)
         print('review', review)
 
-        return redirect('/')
+        new_review = Review(rating=rating, review=review, user_id=user.id, book_id=book.id)
+        db.session.add(new_review)
+        db.session.commit()
 
-
+        return render_template('book.html', result=result, user=user, desc=desc, new_review=review)
 
     else:
-        print('not validated')
+        render_template('book.html', result=result, user=user, desc=desc, form=form, book=book)
 
 
 
@@ -602,7 +604,7 @@ def show_book(volumeId):
 
     # if the book is in any of the lists for the user, show review form
     elif user.is_book_in_list(book.id):
-        return render_template('book.html', result=result, user=user, desc=desc, form=form)
+        return render_template('book.html', result=result, user=user, desc=desc, form=form, book=book)
 
     
 
