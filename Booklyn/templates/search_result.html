@@ -7,7 +7,7 @@
 
   <ul class="list-unstyled ">
     {% if result %}
-
+    
     <p>Found {{ result['items']|length }} books with the title "{{ search }}." </p>
     {% for book in result['items'] %}
     <li class="media mt-3" id="book-li">

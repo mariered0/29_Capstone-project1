@@ -43,13 +43,20 @@ def search():
     user = g.user
 
     search = request.args.get('q')
-        
 
-
-    res = requests.get(f'{url}/volumes', params={'key': GOOGLE_BOOKS_API_KEY, 'q': search, 'maxResults':40} )
+    res = requests.get(f'{url}/volumes', params={'key': GOOGLE_BOOKS_API_KEY, 'q': search, 'maxResults':40, 'printType': 'books'} )
     result = res.json()
-    
-    # items = []
+
+    try:
+        res = requests.get(f'{url}/volumes', params={'key': GOOGLE_BOOKS_API_KEY, 'q': search, 'maxResults':40, 'printType': 'books'} )
+        result = res.json()
+        return render_template('search_result.html', result=result, search=search, user=user)
+
+    except Exception:
+        flash(f"Please enter a valid keyword", 'danger')
+        return redirect('/')
+
+    items = []
 
     # for book in result['items']:
     #     check = {}
@@ -65,9 +72,12 @@ def search():
     #             'thubmnail': book['volumeInfo']['imageLinks']['thumbnail']})
 
     # print('result', items)
+    
+    
 
 
-    return render_template('search_result.html', result=result, search=search, user=user)
+
+    
 
 
 
@@ -132,7 +142,7 @@ def signup():
 
         do_login(user)
 
-        return redirect(f'/users/{user.id}/')
+        return redirect('/')
     else:
         return render_template('users/signup.html', form=form)
 
@@ -532,32 +542,17 @@ def show_favorite(user_id):
     return render_template('users/lists/list_favorite.html', user=user)
 
 
-@app.route('/users/<int:user_id>/review/<int:book_id>')
-def write_review(user_id, book_id):
-    """Show a page to write review for a book."""
+@app.route('/users/<int:user_id>/reviews')
+def show_reviews(user_id):
+    """Show a page with a list of reviews that user wrote."""
 
     if not g.user:
         flash("Access unauthorized.", 'danger')
         return redirect('/')
 
     user = User.query.get_or_404(user_id)
-    book = Book.query.get_or_404(book_id)
-    form = BookReviewForm()
-
-    if form.validate_on_submit():
-        review = Review(user_id=user_id, book_id=book_id, rating=form.rating.data, review=form.review.data)
-        db.session.commit()
-
-        redirect('/')
     
-    return render_template('/users/reviews/review.html', form=form)
-
-    
-
-    
-    user = User.query.get_or_404(user_id)
-
-    return render_template('/users/list_favorite.html', user=user)
+    return render_template('users/list_review.html', user=user)
 
 
 ##########################################################
@@ -569,8 +564,6 @@ def show_book(volumeId):
     """Show book detail page with review form if the user already has the book in their list."""
 
     user = g.user
-    # data = MultiDict(mapping=request.form)
-    # form = BookReviewForm(data)
     form = BookReviewForm()
 
     res = requests.get(f'{url}/volumes/{volumeId}', params={'key': GOOGLE_BOOKS_API_KEY} )
@@ -597,14 +590,14 @@ def show_book(volumeId):
     else:
         render_template('book.html', result=result, user=user, desc=desc, form=form, book=book)
 
-
-
-    if not book:
+    # if the book selected is not in db yet, only show book data   
+    if book == None:
         return render_template('book.html', result=result, user=user, desc=desc)
 
     # if the book is in any of the lists for the user, show review form
     elif user.is_book_in_list(book.id):
         return render_template('book.html', result=result, user=user, desc=desc, form=form, book=book)
+
 
     
 

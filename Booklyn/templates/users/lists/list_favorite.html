@@ -54,6 +54,9 @@
                         {{ "," if not loop.last else "" }}
                         {% endfor %}
                     </p>
+                    {% if user.user_reviewed(book.id) %}
+                    <p>{{ book.reviews }}</p>
+                    {% endif %}
                 </div>
             </li>
         </div>
