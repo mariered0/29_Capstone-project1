@@ -36,7 +36,7 @@
                             {{ ': ' + book.subtitle if book.subtitle }}
                         </a>
                         {% if g.user %}
-                        <form action="/users/{{ user.id }}/read/{{ book.id }}/delete" method="POST"
+                        <form action="/users/{{ user.id }}/favorite/{{ book.id }}/delete" method="POST"
                             class="delete-form d-inline">
                             <button class="btn btn-sm btn-secondary">
                                 <i class="fa-solid fa-trash-can"></i>

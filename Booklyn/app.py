@@ -5,8 +5,9 @@ from sqlalchemy.exc import IntegrityError
 
 from forms import UserAddForm, LoginForm, UserEditForm, BookReviewForm
 from secret import GOOGLE_BOOKS_API_KEY
-from models import db, connect_db, User, Author, Publisher, Category, Book, Review
+from models import db, connect_db, User, Author, Publisher, Book, Review
 from werkzeug.datastructures import MultiDict
+from werkzeug.exceptions import HTTPException
 
 import requests, ast
 
@@ -196,7 +197,10 @@ def add_want_to_read(user_id):
         data[key] = value
     
     # Create author data in db
-    authors = ast.literal_eval(data['author'])
+    if len(data['author']) is 0 or 'author' not in data:
+        authors = ['N/A']
+    else:
+        authors = ast.literal_eval(data['author'])
 
     User.create_author_data(authors)
 
@@ -265,7 +269,10 @@ def add_currently_reading(user_id):
         data[key] = value
     
     # Create author data in db
-    authors = ast.literal_eval(data['author'])
+    if len(data['author']) is 0 or 'author' not in data:
+        authors = ['N/A']
+    else:
+        authors = ast.literal_eval(data['author'])
 
     User.create_author_data(authors)
 
@@ -331,7 +338,11 @@ def add_read(user_id):
         data[key] = value
     
     # Create author data in db
-    authors = ast.literal_eval(data['author'])
+    if len(data['author']) is 0 or 'author' not in data:
+        authors = ['N/A']
+    else:
+        authors = ast.literal_eval(data['author'])
+
 
     User.create_author_data(authors)
 
@@ -398,7 +409,10 @@ def add_favorite(user_id):
         data[key] = value
     
     # Create author data in db
-    authors = ast.literal_eval(data['author'])
+    if len(data['author']) is 0 or 'author' not in data:
+        authors = ['N/A']
+    else:
+        authors = ast.literal_eval(data['author'])
 
     User.create_author_data(authors)
 
@@ -485,8 +499,13 @@ def user_edit(user_id):
             user.bio = form.bio.data
             db.session.commit()
 
-        flash('User profile has been edited!', 'success')
-        return redirect(f'/users/{user.id}')
+            flash('User profile has been edited!', 'success')
+            return redirect(f'/users/{user.id}')
+
+        else:
+            flash("Access unauthorized.", "danger")
+            return render_template(f'/users/edit.html', form=form, user=user)
+
     else:
         return render_template(f'/users/edit.html', form=form, user=user)
 
@@ -629,17 +648,15 @@ def show_book(volumeId):
     user = g.user
     form = BookReviewForm()
 
+
     res = requests.get(f'{url}/volumes/{volumeId}', params={'key': GOOGLE_BOOKS_API_KEY} )
     result = res.json()
 
+    # Checking if the description data is included in the API response
     if 'description' in result['volumeInfo']:
         desc = result['volumeInfo']['description']
-        
     else:
         desc = 'N/A'
-        
-
-
         
     # we're just checking if the book exist or not, so we don't want 404 error here.
     book = Book.query.filter_by(volumeId=volumeId).first()
@@ -653,25 +670,33 @@ def show_book(volumeId):
         db.session.add(new_review)
         db.session.commit()
 
-        return render_template('book.html', result=result, user=user, desc=desc, new_review=review)
+        return redirect (f'/books/{volumeId}')
 
-    else:
-        render_template('book.html', result=result, user=user, desc=desc, form=form, book=book)
-
-    # if the book selected is not in db yet, only show book data   
+    # if the book is not in the db, do not show the review form
     if book == None:
-        return render_template('book.html', result=result, user=user, desc=desc)
+            return render_template('book.html', result=result, user=user, desc=desc)
 
     # if the book is in any of the lists for the user, show review form
     elif user.is_book_in_list(book.id):
         return render_template('book.html', result=result, user=user, desc=desc, form=form, book=book)
 
+    else:
+        return render_template('book.html', result=result, user=user, desc=desc, book=book)
 
-@app.errorhandler(404)
+
+
+
+# @app.errorhandler(404)
+# def page_not_found(e):
+#     """Handle 404 page not found."""
+
+#     return render_template('404.html'), 404
+
+@app.errorhandler(Exception)
 def page_not_found(e):
-    """Handle 404 not found."""
+    """Handle exceptions."""
 
-    return render_template('404.html')
+    return render_template('404.html', e=e), 500
     
 
     
