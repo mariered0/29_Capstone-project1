@@ -6,8 +6,8 @@ from sqlalchemy.exc import IntegrityError
 from forms import UserAddForm, LoginForm, UserEditForm, BookReviewForm
 from secret import GOOGLE_BOOKS_API_KEY
 from models import db, connect_db, User, Author, Publisher, Book, Review
-from werkzeug.datastructures import MultiDict
-from werkzeug.exceptions import HTTPException
+# from werkzeug.datastructures import MultiDict
+# from werkzeug.exceptions import HTTPException
 
 import requests, ast
 
@@ -32,8 +32,6 @@ debug = DebugToolbarExtension(app)
 url = 'https://www.googleapis.com/books/v1'
 
 
-
-
 @app.route('/search')
 def search():
     """Get book data."""
@@ -46,9 +44,6 @@ def search():
 
     search = request.args.get('q')
 
-    res = requests.get(f'{url}/volumes', params={'key': GOOGLE_BOOKS_API_KEY, 'q': search, 'maxResults':40, 'printType': 'books'} )
-    result = res.json()
-
     try:
         res = requests.get(f'{url}/volumes', params={'key': GOOGLE_BOOKS_API_KEY, 'q': search, 'maxResults':40, 'printType': 'books'} )
         result = res.json()
@@ -57,33 +52,6 @@ def search():
     except Exception:
         flash(f"Please enter a valid keyword", 'danger')
         return redirect('/')
-
-    # items = []
-
-    # for book in result['items']:
-    #     check = {}
-
-    #     print('check values', check.values())
-    #     if book['volumeInfo']['title'] not in check and book['volumeInfo']['authors'] not in check:
-    #         check['title'] = {book['volumeInfo']['title']}
-    #         check['author'] = book['volumeInfo']['authors']
-    #         items.append({
-    #             'title': book['volumeInfo']['title'], 
-    #             'authors': book['volumeInfo']['authors'], 
-    #             'publisher': book['volumeInfo']['publisher'], 
-    #             'thubmnail': book['volumeInfo']['imageLinks']['thumbnail']})
-
-    # print('result', items)
-
-    # return render_template('search_result.html', result=result, search=search, user=user)
-    
-    
-
-
-
-    
-
-
 
 ###################################################################
 # User signup/login/logout
@@ -193,7 +161,6 @@ def add_want_to_read(user_id):
 
     data = {}
     for key, value in request.form.items():
-        print("item: {0}, data: {1}".format(key, value))
         data[key] = value
     
     # Create author data in db
@@ -206,8 +173,6 @@ def add_want_to_read(user_id):
 
     # Create category data in db
     if len(data['category']) is 0 or 'category' not in data:
-        print('****************')
-        print('No category!')
         categories = ['N/A']
     else:
         categories = ast.literal_eval(data['category'])
@@ -265,7 +230,6 @@ def add_currently_reading(user_id):
 
     data = {}
     for key, value in request.form.items():
-        print("item: {0}, data: {1}".format(key, value))
         data[key] = value
     
     # Create author data in db
@@ -334,7 +298,6 @@ def add_read(user_id):
 
     data = {}
     for key, value in request.form.items():
-        print("item: {0}, data: {1}".format(key, value))
         data[key] = value
     
     # Create author data in db
@@ -375,7 +338,6 @@ def add_read(user_id):
     user = g.user
 
     # Add the relationship between book id and and user id to db
-    print('new_book', new_book)
     user.read.append(new_book)
     db.session.commit()
     
@@ -405,7 +367,6 @@ def add_favorite(user_id):
 
     data = {}
     for key, value in request.form.items():
-        print("item: {0}, data: {1}".format(key, value))
         data[key] = value
     
     # Create author data in db
@@ -444,7 +405,6 @@ def add_favorite(user_id):
     user = g.user
 
     # Add the relationship between book id and and user id to db
-    print('new_book', new_book)
     user.favorite.append(new_book)
     db.session.commit()
     
@@ -631,12 +591,6 @@ def update_review(user_id, review_id):
         return render_template(f'/users/reviews/edit.html', form=form, user=user, review=review)
 
 
-
-
-
-
-
-
 ##########################################################
 # Book
 ##########################################################
@@ -682,8 +636,6 @@ def show_book(volumeId):
 
     else:
         return render_template('book.html', result=result, user=user, desc=desc, book=book)
-
-
 
 
 # @app.errorhandler(404)
