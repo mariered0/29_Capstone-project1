@@ -26,7 +26,7 @@ class UserEditForm(FlaskForm):
     email = StringField('Email', validators=[InputRequired(), Email()])
     password = PasswordField('Password', validators=[Length(min=6)])
     image_url = StringField('(Optional) Image URL')
-    bio = TextAreaField('Bio', default= 'this is default', validators=[Length(max=500)])
+    bio = TextAreaField('Bio', validators=[Length(max=500)])
 
 class BookReviewForm(FlaskForm):
     """Form for book reviews."""

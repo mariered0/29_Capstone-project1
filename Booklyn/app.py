@@ -36,6 +36,7 @@ url = 'https://www.googleapis.com/books/v1'
 @app.route('/search')
 def search():
     """Get book data."""
+
     if not g.user:
         flash("Access unauthorized.", 'danger')
         return redirect('users/signup.html')
@@ -56,7 +57,7 @@ def search():
         flash(f"Please enter a valid keyword", 'danger')
         return redirect('/')
 
-    items = []
+    # items = []
 
     # for book in result['items']:
     #     check = {}
@@ -72,6 +73,8 @@ def search():
     #             'thubmnail': book['volumeInfo']['imageLinks']['thumbnail']})
 
     # print('result', items)
+
+    # return render_template('search_result.html', result=result, search=search, user=user)
     
     
 
@@ -198,7 +201,9 @@ def add_want_to_read(user_id):
     User.create_author_data(authors)
 
     # Create category data in db
-    if len(data['category']) is 0:
+    if len(data['category']) is 0 or 'category' not in data:
+        print('****************')
+        print('No category!')
         categories = ['N/A']
     else:
         categories = ast.literal_eval(data['category'])
@@ -207,7 +212,7 @@ def add_want_to_read(user_id):
 
     publisher = data['publisher']
 
-    if not Publisher.query.filter(Publisher.publisher == publisher).first():
+    if Publisher.query.filter(Publisher.publisher == publisher).first() == None:
         new_publisher = Publisher(publisher=publisher)
         db.session.add(new_publisher)
         db.session.commit()
@@ -542,6 +547,11 @@ def show_favorite(user_id):
     return render_template('users/lists/list_favorite.html', user=user)
 
 
+
+##########################################################
+# User - reviews
+##########################################################
+
 @app.route('/users/<int:user_id>/reviews')
 def show_reviews(user_id):
     """Show a page with a list of reviews that user wrote."""
@@ -552,7 +562,60 @@ def show_reviews(user_id):
 
     user = User.query.get_or_404(user_id)
     
-    return render_template('users/list_review.html', user=user)
+    return render_template('users/lists/list_review.html', user=user)
+
+
+@app.route('/users/<int:user_id>/reviews/<int:review_id>/delete', methods=['POST'])
+def delete_review(user_id, review_id):
+    """Delete a review."""
+
+    if not g.user:
+        flash("Access unauthorized.", 'danger')
+        return redirect('/')
+
+    user = User.query.get_or_404(user_id)
+    review = Review.query.get_or_404(review_id)
+
+    db.session.delete(review)
+    db.session.commit()
+
+    return redirect(f'/users/{user_id}/reviews')
+
+
+@app.route('/users/<int:user_id>/reviews/<int:review_id>/update', methods=['GET', 'POST'])
+def update_review(user_id, review_id):
+    """Update a review."""
+
+    if not g.user:
+        flash("Access unauthorized.", 'danger')
+        return redirect('/')
+
+    user = User.query.get_or_404(user_id)
+    review = Review.query.get_or_404(review_id)
+    form = BookReviewForm(rating=review.rating)
+
+    if form.validate_on_submit():
+
+        review.rating = form.rating.data
+        review.review = form.review.data
+        review.user_id = user.id
+        review.book_id = review.book.id
+
+        db.session.commit()
+
+        review.update_time()
+
+        flash('Your review has been edited!', 'success')
+        return redirect(f'/users/{user_id}/reviews')
+
+    else:
+        return render_template(f'/users/reviews/edit.html', form=form, user=user, review=review)
+
+
+
+
+
+
 
 
 ##########################################################
@@ -568,18 +631,23 @@ def show_book(volumeId):
 
     res = requests.get(f'{url}/volumes/{volumeId}', params={'key': GOOGLE_BOOKS_API_KEY} )
     result = res.json()
-    desc = result['volumeInfo']['description']
 
+    if 'description' in result['volumeInfo']:
+        desc = result['volumeInfo']['description']
+        
+    else:
+        desc = 'N/A'
+        
+
+
+        
+    # we're just checking if the book exist or not, so we don't want 404 error here.
     book = Book.query.filter_by(volumeId=volumeId).first()
 
     if request.method == 'POST' and form.validate_on_submit():
 
         rating = form.rating.data
         review = form.review.data
-
-        print('**************************')
-        print('rating', rating)
-        print('review', review)
 
         new_review = Review(rating=rating, review=review, user_id=user.id, book_id=book.id)
         db.session.add(new_review)
@@ -599,6 +667,11 @@ def show_book(volumeId):
         return render_template('book.html', result=result, user=user, desc=desc, form=form, book=book)
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    """Handle 404 not found."""
+
+    return render_template('404.html')
     
 
     

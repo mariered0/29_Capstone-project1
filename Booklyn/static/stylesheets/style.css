@@ -36,32 +36,22 @@ home page
 }
 
 
-
-/* .background{
-    font-family: serif;
-    color: #B9C6CC;
-    height: 100%;
-    background-image: url('/static/images/home_background.jpg');
-
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-} */
-
-/* User profile page */
-/* .middle-bar{
-    background-color: #1D6686;
-    height: 100%;
-} */
-
-/* .card-img-top{
-    height: 350px;
-    width: 130px;
-} */
-
 /* ****************************************
 user profile page
 ***************************************** */
+
+
+
+/* ****************************************
+lists
+***************************************** */
+.book_title {
+    color: black;
+}
+
+
+
+
 
 
 

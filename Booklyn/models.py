@@ -204,7 +204,7 @@ class User(db.Model):
     def authenticate(cls, username, password):
         """Find user with username and password"""
 
-        user = cls.query.filter_by(username=username).first()
+        user = cls.query.filter_by(username=username).first_or_404()
 
         if user:
             is_auth = bcrypt.check_password_hash(user.password, password)
@@ -221,14 +221,14 @@ class User(db.Model):
         # if there are multiple authors
         if len(authors) != 1:
             for author in authors:
-                if not Author.query.filter(Author.author == author).all():
+                if Author.query.filter(Author.author == author).first() == None:
                     new_author = Author(author=author)
                     db.session.add(new_author)
                     db.session.commit()
 
         # if there's only one author
         else:
-            if not Author.query.filter(Author.author == authors[0]).all():
+            if Author.query.filter(Author.author == authors[0]).first() == None:
                 new_author = Author(author=authors[0])
                 db.session.add(new_author)
                 db.session.commit()
@@ -240,14 +240,14 @@ class User(db.Model):
         # if there are multiple categories
         if len(categories) != 1:
             for category in categories:
-                if not Category.query.filter(Category.category == category).all():
+                if Category.query.filter(Category.category == category).first() == None:
                     new_category = Category(category=category)
                     db.session.add(new_category)
                     db.session.commit()
 
         #if there's only one category
         else:
-            if not Category.query.filter(Category.category == categories[0]).all():
+            if Category.query.filter(Category.category == categories[0]).first() == None:
                 new_category = Category(category=categories[0])
                 db.session.add(new_category)
                 db.session.commit()
@@ -259,7 +259,10 @@ class User(db.Model):
         # Create book data in db
         publisher_id=publisher.id
 
-        if not Book.query.filter_by(title=title).first():
+        book = Book.query.filter_by(title=title).first()
+        print('book', book)
+
+        if book == None:
             new_book = Book(volumeId=volumeId, title=title, subtitle=subtitle, thumbnail=thumbnail or User.thumbnail.default.arg, publisher_id=publisher_id)
             db.session.add(new_book)
             db.session.commit()
@@ -267,27 +270,30 @@ class User(db.Model):
         # Create books_authors relationship
             if len(authors) != 1:
                 for author in authors:
-                    author = Author.query.filter(Author.author == author).first()
+                    author = Author.query.filter(Author.author == author).first_or_404()
                     new_book.authors.append(author)
                     db.session.commit()
             else:
-                author = Author.query.filter(Author.author == authors[0]).first()
+                author = Author.query.filter(Author.author == authors[0]).first_or_404()
                 new_book.authors.append(author)
                 db.session.commit()
 
         # Create books_categories relationship
             if len(categories) != 1:
                 for category in categories:
-                    cat = Category.query.filter(Category.category == category).first()
+                    cat = Category.query.filter(Category.category == category).first_or_404()
                     new_book.categories.append(cat)
                     db.session.commit()
             else:
-                cat = Category.query.filter(Category.category == categories[0]).first()
+                cat = Category.query.filter(Category.category == categories[0]).first_or_404()
                 new_book.categories.append(cat)
                 db.session.commit()
 
         else:
-            new_book = Book.query.filter_by(title=title, publisher=publisher).first()
+            book = Book.query.filter_by(title=title).first_or_404()
+            if book.authors[0].author == authors[0]:
+                new_book = book
+
 
         return new_book
         
@@ -307,6 +313,11 @@ class Review(db.Model):
     date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
 
     book = db.relationship('Book', backref='reviews')
+
+    def update_time(self):
+        self.date_added = datetime.utcnow()
+        db.session.add(self)
+        db.session.commit()
     
     def __repr__(self):
         return f"<Review #{self.id}: rating: {self.rating}, review: {self.review}, user: {self.user_id}, book: {self.book_id}, date added: {self.date_added}>"

@@ -26,17 +26,21 @@
         {% for book in user.favorite %}
         <div class="media" id="favorite_div">
             <li class="media mt-3">
-
-                <img src="{{ book.thumbnail }}" class="mr-3" alt="book cover image">
+                <a href="/books/{{ book.volumeId }}">
+                    <img src="{{ book.thumbnail }}" class="mr-3" alt="book cover image">
+                </a>
                 <div class="media-body">
                     <h5>
-                        {{ book.title }}
-                        {{ ': ' + book.subtitle if book.subtitle }}
+                        <a href="/books/{{ book.volumeId }}" class="book_title">
+                            {{ book.title }}
+                            {{ ': ' + book.subtitle if book.subtitle }}
+                        </a>
                         {% if g.user %}
-                        <form action="/users/{{ user.id }}/read/{{ book.id }}/delete" method="POST" class="delete-form d-inline">
+                        <form action="/users/{{ user.id }}/read/{{ book.id }}/delete" method="POST"
+                            class="delete-form d-inline">
                             <button class="btn btn-sm btn-secondary">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
                         </form>
                         {% endif %}
                     </h5>
@@ -55,7 +59,12 @@
                         {% endfor %}
                     </p>
                     {% if user.user_reviewed(book.id) %}
-                    <p>{{ book.reviews }}</p>
+                    {% for review in book.reviews %}
+                     {% if review.user_id == user.id %}
+                     <h5>Your Review:</h5>
+                    <p>{{ review.review }}</p>
+                    {% endif %}
+                    {% endfor %}
                     {% endif %}
                 </div>
             </li>

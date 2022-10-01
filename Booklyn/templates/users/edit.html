@@ -43,15 +43,15 @@
                 {% for error in form.bio.errors %}
                 <span class="text-danger">{{ error }}</span>
                 {% endfor %}
-                {% if user.bio %}
-                {{ form.bio(default='Hi', class="form-control", id="form_textarea_bio") }}
-            
-                <script>document.querySelector('#form_textarea_bio').innerText = `${user.bio}`</script>
 
-                {% endif %}
                 {% if user.bio == None%}
                 {{ form.bio(placeholder='Introduce yourself!', class="form-control") }}
+                {% else %}
+                <textarea id="body" name="body" class="form-control">{{ user.bio }}</textarea>
+
+                
                 {% endif %}
+                
             </div>
             <div class="form-group">
                 {{ form.password.label }}

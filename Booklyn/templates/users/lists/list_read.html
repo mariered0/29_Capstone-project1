@@ -26,17 +26,20 @@
         {% for book in user.read %}
         <div class="media" id="read_div">
             <li class="media mt-3">
-
-                <img src="{{ book.thumbnail }}" class="mr-3" alt="book cover image">
+                <a href="/books/{{ book.volumeId }}" class="book_title">
+                    <img src="{{ book.thumbnail }}" class="mr-3" alt="book cover image"></a>
                 <div class="media-body">
                     <h5>
-                        {{ book.title }}
-                        {{ ': ' + book.subtitle if book.subtitle }}
+                        <a href="/books/{{ book.volumeId }}" class="book_title">
+                            {{ book.title }}
+                            {{ ': ' + book.subtitle if book.subtitle }}
+                        </a>
                         {% if g.user %}
-                        <form action="/users/{{ user.id }}/read/{{ book.id }}/delete" method="POST" class="delete-form d-inline">
+                        <form action="/users/{{ user.id }}/read/{{ book.id }}/delete" method="POST"
+                            class="delete-form d-inline">
                             <button class="btn btn-sm btn-secondary">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
                         </form>
                         {% endif %}
                     </h5>
