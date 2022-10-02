@@ -4,7 +4,7 @@ import os
 from unittest import TestCase
 from sqlalchemy import exc
 
-from models import db, User
+from models import db, User, Author, Category, Publisher, Book
 
 os.environ['DATABASE_URL'] = "postgresql:///booklyn-test"
 
@@ -42,6 +42,41 @@ class UserModelTestCase(TestCase):
         self.u2_id = u2_id
 
         self.client = app.test_client()
+
+        ########################################
+        #Create data for a book
+
+        #Create author data in db
+        authors = ['Malcolm Gladwell']
+        Author.create_author_data(authors)
+
+        #Create category data in db
+        categories = ['Psychology']
+        Category.create_category_data(categories)
+
+        #Create publisher data in db
+        publisher = 'Penguin UK'
+        new_publisher = Publisher(publisher=publisher)
+        db.session.add(new_publisher)
+        db.session.commit()
+
+        #Create book data in db
+        volumeId = 'ialrgIT41OAC'
+        title = 'Outliers'
+        subtitle = 'The Story of Success'
+        thumbnail = "http://books.google.com/books/content?id=ialrgIT41OAC&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72w989WrrTHWdOReyHMNFPdkySlbrf6TlmCvIAoYKeGFpCGACuhuW6MTYht3YT5lGZO9umWjPp3DKFDBIdMndmlXUDPLR-O11K0fHqMutXMl-FPraikyT9OL_GmFpqjGSu6mN5J&source=gbs_api"
+
+        publisher = Publisher.query.filter_by(publisher=publisher).first_or_404()
+
+        Book.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
+        new_book = Book.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
+
+        #Add the relationship with the book above and a user
+        u1.want_to_read.append(new_book)
+        db.session.commit()
+
+        self.title = title
+
 
     def tearDown(self):
         res = super().tearDown()
@@ -149,6 +184,18 @@ class UserModelTestCase(TestCase):
 
         self.assertFalse(User.authenticate(username='test1', password='pass'))
 
+    def test_is_book_in_list(self):
+        """Does the is_book_in_list instance method function correctly?"""
+
+        book = Book.query.filter_by(title=self.title).first()
+        self.assertTrue(self.u1.is_book_in_list(book.id))
+
+
+    def user_reviewed(self):
+        """Does the user_reviewed instance method function correctly?"""
+
+        book = Book.query.filter_by(title=self.title).first()
+        self.assertFalse(self.u1.user_reviewed(book.id))
 
 
     

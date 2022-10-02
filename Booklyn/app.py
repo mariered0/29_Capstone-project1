@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 
 from forms import UserAddForm, LoginForm, UserEditForm, BookReviewForm
 from secret import GOOGLE_BOOKS_API_KEY
-from models import db, connect_db, User, Author, Publisher, Book, Review
+from models import db, connect_db, User, Author, Category, Publisher, Book, Review
 # from werkzeug.datastructures import MultiDict
 # from werkzeug.exceptions import HTTPException
 
@@ -175,7 +175,7 @@ def add_want_to_read(user_id):
     else:
         authors = ast.literal_eval(data['author'])
 
-    User.create_author_data(authors)
+    Author.create_author_data(authors)
 
     # Create category data in db
     if len(data['category']) is 0 or 'category' not in data:
@@ -183,7 +183,7 @@ def add_want_to_read(user_id):
     else:
         categories = ast.literal_eval(data['category'])
 
-    User.create_category_data(categories)
+    Category.create_category_data(categories)
 
     publisher = data['publisher']
 
@@ -198,10 +198,10 @@ def add_want_to_read(user_id):
     subtitle = data['subtitle']
     thumbnail = data['thumbnail']
 
-    publisher = Publisher.query.filter_by(publisher=publisher).first()
+    publisher = Publisher.query.filter_by(publisher=publisher).first_or_404()
 
-    User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
-    new_book = User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
+    Book.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
+    new_book = Book.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
 
     user = g.user
 
@@ -244,7 +244,7 @@ def add_currently_reading(user_id):
     else:
         authors = ast.literal_eval(data['author'])
 
-    User.create_author_data(authors)
+    Author.create_author_data(authors)
 
     # Create category data in db
     if len(data['category']) is 0:
@@ -252,7 +252,7 @@ def add_currently_reading(user_id):
     else:
         categories = ast.literal_eval(data['category'])
     
-    User.create_category_data(categories)
+    Category.create_category_data(categories)
 
     publisher = data['publisher']
     if not Publisher.query.filter(Publisher.publisher == publisher).first():
@@ -268,8 +268,8 @@ def add_currently_reading(user_id):
 
     publisher = Publisher.query.filter_by(publisher=publisher).first()
 
-    User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
-    new_book = User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
+    Book.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
+    new_book = Book.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
 
     user = g.user
 
@@ -313,7 +313,7 @@ def add_read(user_id):
         authors = ast.literal_eval(data['author'])
 
 
-    User.create_author_data(authors)
+    Author.create_author_data(authors)
 
     # Create category data in db
     if len(data['category']) is 0:
@@ -321,7 +321,7 @@ def add_read(user_id):
     else:
         categories = ast.literal_eval(data['category'])
 
-    User.create_category_data(categories)
+    Category.create_category_data(categories)
 
     publisher = data['publisher']
     if not Publisher.query.filter(Publisher.publisher == publisher).first():
@@ -338,8 +338,8 @@ def add_read(user_id):
 
     publisher = Publisher.query.filter_by(publisher=publisher).first()
 
-    User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
-    new_book = User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
+    Book.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
+    new_book = Book.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
 
     user = g.user
 
@@ -381,7 +381,7 @@ def add_favorite(user_id):
     else:
         authors = ast.literal_eval(data['author'])
 
-    User.create_author_data(authors)
+    Author.create_author_data(authors)
 
     # Create category data in db
     if len(data['category']) is 0:
@@ -389,7 +389,7 @@ def add_favorite(user_id):
     else:
         categories = ast.literal_eval(data['category'])
 
-    User.create_category_data(categories)
+    Category.create_category_data(categories)
 
     publisher = data['publisher']
     if not Publisher.query.filter(Publisher.publisher == publisher).first():
@@ -405,8 +405,8 @@ def add_favorite(user_id):
 
     publisher = Publisher.query.filter_by(publisher=publisher).first()
 
-    User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
-    new_book = User.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
+    Book.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
+    new_book = Book.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
 
     user = g.user
 

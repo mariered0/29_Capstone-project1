@@ -24,6 +24,25 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.Text, nullable=False)
 
+    @classmethod
+    def create_category_data(cls, categories):
+        """Check if the category data already exists in db, and if it doesn't, add the category data to db."""
+
+        # if there are multiple categories
+        if len(categories) != 1:
+            for category in categories:
+                if cls.query.filter(cls.category == category).first() == None:
+                    new_category = cls(category=category)
+                    db.session.add(new_category)
+                    db.session.commit()
+
+        #if there's only one category
+        else:
+            if cls.query.filter(cls.category == categories[0]).first() == None:
+                new_category = cls(category=categories[0])
+                db.session.add(new_category)
+                db.session.commit()
+
 class Author(db.Model):
     """Authors for books."""
 
@@ -34,6 +53,26 @@ class Author(db.Model):
 
     def __repr__(self):
         return f"<Author #{self.id}: {self.author}>"
+
+    @classmethod
+    def create_author_data(cls, authors):
+        """Check if the author data already exists in db, and if it doesn't, add the author data to db."""
+
+        # if there are multiple authors
+        if len(authors) != 1:
+            for author in authors:
+                if cls.query.filter(cls.author == author).first() == None:
+                    new_author = cls(author=author)
+                    db.session.add(new_author)
+                    db.session.commit()
+
+        # if there's only one author
+        else:
+            if cls.query.filter(cls.author == authors[0]).first() == None:
+                new_author = cls(author=authors[0])
+                db.session.add(new_author)
+                db.session.commit()
+
 
 class Publisher(db.Model):
     """Publishers for books."""
@@ -67,6 +106,51 @@ class Book(db.Model):
 
     def __repr__(self):
         return f"<Book #{self.id}: {self.title}, {self.authors}, {self.categories}>"
+
+
+    @classmethod
+    def create_book_data(cls, volumeId, title, subtitle, thumbnail, authors, categories, publisher):
+        """Create book data and relationships in db."""
+
+        # Create book data in db
+        publisher_id=publisher.id
+
+        book = cls.query.filter_by(title=title).first()
+
+        if book == None:
+            new_book = Book(volumeId=volumeId, title=title, subtitle=subtitle, thumbnail=thumbnail or User.thumbnail.default.arg, publisher_id=publisher_id)
+            db.session.add(new_book)
+            db.session.commit()
+
+        # Create books_authors relationship
+            if len(authors) != 1:
+                for author in authors:
+                    author = Author.query.filter(Author.author == author).first_or_404()
+                    new_book.authors.append(author)
+                    db.session.commit()
+            else:
+                author = Author.query.filter(Author.author == authors[0]).first_or_404()
+                new_book.authors.append(author)
+                db.session.commit()
+
+        # Create books_categories relationship
+            if len(categories) != 1:
+                for category in categories:
+                    cat = Category.query.filter(Category.category == category).first_or_404()
+                    new_book.categories.append(cat)
+                    db.session.commit()
+            else:
+                cat = Category.query.filter(Category.category == categories[0]).first_or_404()
+                new_book.categories.append(cat)
+                db.session.commit()
+
+        else:
+            book = cls.query.filter_by(title=title).first_or_404()
+            if book.authors[0].author == authors[0]:
+                new_book = book
+
+
+        return new_book
 
 
 class BookAuthor(db.Model):
@@ -182,8 +266,6 @@ class User(db.Model):
             return True
 
 
-
-
     @classmethod
     def signup(cls, username, password, email, image_url):
         """Sing up user."""
@@ -212,93 +294,7 @@ class User(db.Model):
                 return user
     
         return False
-
-
-    @classmethod
-    def create_author_data(self, authors):
-        """Check if the author data already exists in db, and if it doesn't, add the author data to db."""
-
-        # if there are multiple authors
-        if len(authors) != 1:
-            for author in authors:
-                if Author.query.filter(Author.author == author).first() == None:
-                    new_author = Author(author=author)
-                    db.session.add(new_author)
-                    db.session.commit()
-
-        # if there's only one author
-        else:
-            if Author.query.filter(Author.author == authors[0]).first() == None:
-                new_author = Author(author=authors[0])
-                db.session.add(new_author)
-                db.session.commit()
-
-    @classmethod
-    def create_category_data(self, categories):
-        """Check if the category data already exists in db, and if it doesn't, add the category data to db."""
-
-        # if there are multiple categories
-        if len(categories) != 1:
-            for category in categories:
-                if Category.query.filter(Category.category == category).first() == None:
-                    new_category = Category(category=category)
-                    db.session.add(new_category)
-                    db.session.commit()
-
-        #if there's only one category
-        else:
-            if Category.query.filter(Category.category == categories[0]).first() == None:
-                new_category = Category(category=categories[0])
-                db.session.add(new_category)
-                db.session.commit()
-
-    @classmethod
-    def create_book_data(self, volumeId, title, subtitle, thumbnail, authors, categories, publisher):
-        """ """
-
-        # Create book data in db
-        publisher_id=publisher.id
-
-        book = Book.query.filter_by(title=title).first()
-        print('book', book)
-
-        if book == None:
-            new_book = Book(volumeId=volumeId, title=title, subtitle=subtitle, thumbnail=thumbnail or User.thumbnail.default.arg, publisher_id=publisher_id)
-            db.session.add(new_book)
-            db.session.commit()
-
-        # Create books_authors relationship
-            if len(authors) != 1:
-                for author in authors:
-                    author = Author.query.filter(Author.author == author).first_or_404()
-                    new_book.authors.append(author)
-                    db.session.commit()
-            else:
-                author = Author.query.filter(Author.author == authors[0]).first_or_404()
-                new_book.authors.append(author)
-                db.session.commit()
-
-        # Create books_categories relationship
-            if len(categories) != 1:
-                for category in categories:
-                    cat = Category.query.filter(Category.category == category).first_or_404()
-                    new_book.categories.append(cat)
-                    db.session.commit()
-            else:
-                cat = Category.query.filter(Category.category == categories[0]).first_or_404()
-                new_book.categories.append(cat)
-                db.session.commit()
-
-        else:
-            book = Book.query.filter_by(title=title).first_or_404()
-            if book.authors[0].author == authors[0]:
-                new_book = book
-
-
-        return new_book
         
-
-
 
 class Review(db.Model):
     """Reviews."""
