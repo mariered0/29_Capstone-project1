@@ -445,7 +445,7 @@ def users_show(user_id):
 
 
 @app.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
-def user_edit(user_id):
+def users_edit(user_id):
     """Show user profile edit page."""
 
     if not g.user:
@@ -640,6 +640,7 @@ def show_book(volumeId):
     elif user.is_book_in_list(book.id):
         return render_template('book.html', result=result, user=user, desc=desc, form=form, book=book)
 
+    #If the book is in the db but not in user's list
     else:
         return render_template('book.html', result=result, user=user, desc=desc, book=book)
 

@@ -4,7 +4,7 @@ import os
 from unittest import TestCase
 from sqlalchemy import exc
 
-from models import db, User, Author, Category, Publisher, Book
+from models import db, User, Author, Category, Publisher, Book, Review
 
 os.environ['DATABASE_URL'] = "postgresql:///booklyn-test"
 
@@ -191,11 +191,24 @@ class UserModelTestCase(TestCase):
         self.assertTrue(self.u1.is_book_in_list(book.id))
 
 
-    def user_reviewed(self):
-        """Does the user_reviewed instance method function correctly?"""
+    def test_user_reviewed(self):
+        """Does the user_reviewed instance method functions correctly?"""
 
+        #The user_reviewed instance method returns False when the user hasn't made a review for the book?
         book = Book.query.filter_by(title=self.title).first()
         self.assertFalse(self.u1.user_reviewed(book.id))
+
+        #Making a review by u1
+        rating = 5
+        review = 'It was great!'
+        new_review = Review(rating=rating, review=review, user_id=self.u1_id, book_id=book.id)
+        db.session.add(new_review)
+        db.session.commit()
+
+        #Check if the user_reviewed instance method returns True when the user has wrote a review for the book?
+        self.assertTrue(self.u1.user_reviewed(book.id))
+
+    
 
 
     
