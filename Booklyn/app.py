@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, request, render_template, redirect, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
@@ -15,12 +17,15 @@ CURR_USER_KEY = 'curr_user'
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///booklyn_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    os.environ.get('DATABASE_URL', 'postgresql:///booklyn_db'))
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #this echo allows us to see the SQL lines that happen in background
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+
 
 
 connect_db(app)
@@ -133,6 +138,7 @@ def login():
             return redirect('/')
 
         flash("Invalid credentials.", 'danger')
+        return redirect('/login')
 
     return render_template('users/login.html', form=form)
 
@@ -649,6 +655,23 @@ def page_not_found(e):
     """Handle exceptions."""
 
     return render_template('404.html', e=e), 500
+
+
+##############################################################################
+# Turn off all caching in Flask
+#   (useful for dev; in production)
+#
+# https://stackoverflow.com/questions/34066804/disabling-caching-in-flask
+
+@app.after_request
+def add_header(req):
+    """Add non-caching headers on every request."""
+
+    req.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    req.headers["Pragma"] = "no-cache"
+    req.headers["Expires"] = "0"
+    req.headers['Cache-Control'] = 'public, max-age=0'
+    return req
     
 
     

@@ -204,7 +204,7 @@ class User(db.Model):
     def authenticate(cls, username, password):
         """Find user with username and password"""
 
-        user = cls.query.filter_by(username=username).first_or_404()
+        user = cls.query.filter_by(username=username).first()
 
         if user:
             is_auth = bcrypt.check_password_hash(user.password, password)
