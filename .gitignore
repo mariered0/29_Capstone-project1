@@ -1,4 +1,5 @@
 .DS_Store
 venv/
 Booklyn/__pycache__/
+Booklyn/tests/__pycache__/
 Booklyn/secret.py
