@@ -186,88 +186,86 @@ class UserViewTestCase(TestCase):
 ########################
 
 
-    def test_add_want_to_read(self):
-        """Test add_want_to_read view."""
+    # def test_add_want_to_read(self):
+    #     """Test add_want_to_read view."""
 
-        with self.client as c:
-            with c.session_transaction() as sess:
-                sess[CURR_USER_KEY] = self.u2_id
-            resp = c.post(f'/users/{self.u2_id}/add_want_to_read',
-            data={
-                'volumeId': self.volumeId2,
-                'author': f'{self.authors2}',
-                'publisher': self.publisher2,
-                'category': f'{self.categories2}',
-                'title': self.title2,
-                'subtitle': self.subtitle2,
-                'thumbnail': self.thumbnail2
-            })
+    #     with self.client as c:
+    #         with c.session_transaction() as sess:
+    #             sess[CURR_USER_KEY] = self.u2_id
+    #         resp = c.post(f'/users/{self.u2_id}/add_want_to_read',
+    #         data={
+    #             'volumeId': self.volumeId2,
+    #             'author': f'{self.authors2}',
+    #             'publisher': self.publisher2,
+    #             'category': f'{self.categories2}',
+    #             'title': self.title2,
+    #             'subtitle': self.subtitle2,
+    #             'thumbnail': self.thumbnail2
+    #         })
 
-            html = resp.get_data(as_text=True)
+    #         html = resp.get_data(as_text=True)
 
-            user = User.query.get(self.u2_id)
-            new_book = Book.query.filter_by(title=f'{self.title2}').first()
+    #         user = User.query.get(self.u2_id)
+    #         new_book = Book.query.filter_by(title=f'{self.title2}').first()
 
-            user.want_to_read.append(new_book)
-            db.session.commit()
+    #         user.want_to_read.append(new_book)
+    #         db.session.commit()
 
-            self.assertEqual(resp.status_code, 302)
+    #         self.assertEqual(resp.status_code, 302)
 
-            # Checking redirect
-            self.assertEqual(resp.location, f"/users/{user.id}/want_to_read")
-
-
-    def test_add_want_to_read_redirection_followed(self):
-        """Check the redirection from the above."""
-
-        with self.client as c:
-            with c.session_transaction() as sess:
-                sess[CURR_USER_KEY] = self.u2_id
-            resp = c.post(f'/users/{self.u2_id}/add_want_to_read',
-            data={
-                'volumeId': self.volumeId2,
-                'author': f'{self.authors2}',
-                'publisher': self.publisher2,
-                'category': f'{self.categories2}',
-                'title': self.title2,
-                'subtitle': self.subtitle2,
-                'thumbnail': self.thumbnail2
-                }, follow_redirects=True)
-
-            html = resp.get_data(as_text=True)
-
-            self.assertEqual(resp.status_code, 200)
+    #         # Checking redirect
+    #         self.assertEqual(resp.location, f"/users/{user.id}/want_to_read")
 
 
-    def test_add_want_to_read_with_new_book(self):
-        """Test add_want_to_read view with new book."""
+    # def test_add_want_to_read_redirection_followed(self):
+    #     """Check the redirection from the above."""
 
-        with self.client as c:
-            with c.session_transaction() as sess:
-                sess[CURR_USER_KEY] = self.u2_id
-            resp = c.post(f'/users/{self.u2_id}/add_want_to_read',
-            data={
-                'volumeId': 'YY45EAAAQBAJ',
-                'author': '['Stephen King']',
-                'publisher': 'Hachette UK',
-                'category': '['Fiction']',
-                'title': 'The Body',
-                'subtitle': None,
-                'thumbnail': self.thumbnail2
-            })
+    #     with self.client as c:
+    #         with c.session_transaction() as sess:
+    #             sess[CURR_USER_KEY] = self.u2_id
+    #         resp = c.post(f'/users/{self.u2_id}/add_want_to_read',
+    #         data={
+    #             'volumeId': self.volumeId2,
+    #             'author': f'{self.authors2}',
+    #             'publisher': self.publisher2,
+    #             'category': f'{self.categories2}',
+    #             'title': self.title2,
+    #             'subtitle': self.subtitle2,
+    #             'thumbnail': self.thumbnail2
+    #             }, follow_redirects=True)
 
-            html = resp.get_data(as_text=True)
+    #         self.assertEqual(resp.status_code, 200)
 
-            user = User.query.get(self.u2_id)
-            new_book = Book.query.filter_by(title=f'{self.title2}').first()
 
-            user.want_to_read.append(new_book)
-            db.session.commit()
+    # def test_add_want_to_read_with_new_book(self):
+    #     """Test add_want_to_read view with new book."""
 
-            self.assertEqual(resp.status_code, 302)
+    #     with self.client as c:
+    #         with c.session_transaction() as sess:
+    #             sess[CURR_USER_KEY] = self.u2_id
+    #         resp = c.post(f'/users/{self.u2_id}/add_want_to_read',
+    #         data={
+    #             'volumeId': 'VnuGDwAAQBAJ',
+    #             'author': "['Malcolm Gladwell']",
+    #             'publisher': 'Little, Brown',
+    #             'category': "['Social Science']",
+    #             'title': 'Talking to Strangers',
+    #             'subtitle': "What We Should Know about the People We Don't Know",
+    #             'thumbnail': "http://books.google.com/books/publisher/content?id=VnuGDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72o0ias8muOV496fVcd_Xm0gc_UOQvQWumDiZ3FVF3-dGvgV9WVNJue8IqKjORFYyP-lVccHGPoI2WzByzh8B7bkzAc0zjjnHWlqJKmNk0SxUj0M-X7oHCOAGg6E8K6jKDgYADj&source=gbs_api"
+    #         })
 
-            # Checking redirect
-            self.assertEqual(resp.location, f"/users/{user.id}/want_to_read")
+    #         html = resp.get_data(as_text=True)
+
+    #         user = User.query.get(self.u2_id)
+    #         new_book = Book.query.filter_by(title='Talking to Strangers').first()
+
+    #         user.want_to_read.append(new_book)
+    #         db.session.commit()
+
+    #         self.assertEqual(resp.status_code, 302)
+
+    #         # Checking redirect
+    #         self.assertEqual(resp.location, f"/users/{user.id}/want_to_read")
 
 
 

@@ -103,110 +103,110 @@ class UserModelTestCase(TestCase):
         self.assertEqual(len(u.read), 0)
         self.assertEqual(len(u.reviews), 0)
 
-    def test_valid_signup(self):
-        """Does User.signup create a new user with valid credential?"""
+    # def test_valid_signup(self):
+    #     """Does User.signup create a new user with valid credential?"""
 
-        u = User.signup(
-            username='testuser', 
-            email='test@gmail.com',
-            password='password',
-            image_url=None)
-        id = 3333
-        u.id = id
-        db.session.commit()
+    #     u = User.signup(
+    #         username='testuser', 
+    #         email='test@gmail.com',
+    #         password='password',
+    #         image_url=None)
+    #     id = 3333
+    #     u.id = id
+    #     db.session.commit()
 
-        u = User.query.get(id)
-        self.assertIsNotNone(u)
+    #     u = User.query.get(id)
+    #     self.assertIsNotNone(u)
 
-        self.assertEqual(u.username, 'testuser')
-        self.assertEqual(u.email, 'test@gmail.com')
-        self.assertEqual(u.image_url, '/static/images/user.png')
-        #This should be False because of hashing
-        self.assertNotEqual(u.password, 'password')
-        #Bcrypt strings start with this    
-        self.assertTrue(u.password.startswith('$2b$'))
+    #     self.assertEqual(u.username, 'testuser')
+    #     self.assertEqual(u.email, 'test@gmail.com')
+    #     self.assertEqual(u.image_url, '/static/images/user.png')
+    #     #This should be False because of hashing
+    #     self.assertNotEqual(u.password, 'password')
+    #     #Bcrypt strings start with this    
+    #     self.assertTrue(u.password.startswith('$2b$'))
 
-    def test_invalid_username_signup(self):
-        """Does User.signup not create a new user with invalid username?"""
+    # def test_invalid_username_signup(self):
+    #     """Does User.signup not create a new user with invalid username?"""
 
-        u = User.signup(
-            username=None, 
-            email="test@test.com", 
-            password="password",
-            image_url=None)
+    #     u = User.signup(
+    #         username=None, 
+    #         email="test@test.com", 
+    #         password="password",
+    #         image_url=None)
 
-        with self.assertRaises(exc.IntegrityError) as context:
-            db.session.commit()
+    #     with self.assertRaises(exc.IntegrityError) as context:
+    #         db.session.commit()
 
-    def test_invalid_email_signup(self):
-        """Does User.signup not create a new user with invalid email?"""
+    # def test_invalid_email_signup(self):
+    #     """Does User.signup not create a new user with invalid email?"""
 
-        u = User.signup(
-            username='testuser', 
-            email=None, 
-            password="password",
-            image_url=None)
+    #     u = User.signup(
+    #         username='testuser', 
+    #         email=None, 
+    #         password="password",
+    #         image_url=None)
 
-        with self.assertRaises(exc.IntegrityError) as context:
-            db.session.commit()
+    #     with self.assertRaises(exc.IntegrityError) as context:
+    #         db.session.commit()
 
 
-    def test_invalid_password_signup(self):
-        """Does User.signup not create a new user with invalid password?
-        Password needs to have 6 characters or more."""
+    # def test_invalid_password_signup(self):
+    #     """Does User.signup not create a new user with invalid password?
+    #     Password needs to have 6 characters or more."""
 
-        with self.assertRaises(ValueError) as context:
-            u = User.signup(
-            username='testuser', 
-            email='test@gmail.com', 
-            password="",
-            image_url=None)
+    #     with self.assertRaises(ValueError) as context:
+    #         u = User.signup(
+    #         username='testuser', 
+    #         email='test@gmail.com', 
+    #         password="",
+    #         image_url=None)
 
-        with self.assertRaises(ValueError) as context:
-            u = User.signup(
-            username='testuser', 
-            email='test@gmail.com', 
-            password=None,
-            image_url=None)
+    #     with self.assertRaises(ValueError) as context:
+    #         u = User.signup(
+    #         username='testuser', 
+    #         email='test@gmail.com', 
+    #         password=None,
+    #         image_url=None)
     
-    def test_valid_authentication(self):
+    # def test_valid_authentication(self):
         
-        u = User.authenticate(self.u1.username, 'password')
-        self.assertIsNotNone(u)
-        self.assertEqual(u.id, self.u1_id)
+    #     u = User.authenticate(self.u1.username, 'password')
+    #     self.assertIsNotNone(u)
+    #     self.assertEqual(u.id, self.u1_id)
 
-    def test_invalid_authentication(self):
-        self.assertFalse(User.authenticate(username='abc', password='password'))
-
-
-    def test_wrong_password(self):
-        """Does User.authenticate with incorrect password using the user, u1 return false? The correct password is password."""
-
-        self.assertFalse(User.authenticate(username='test1', password='pass'))
-
-    def test_is_book_in_list(self):
-        """Does the is_book_in_list instance method function correctly?"""
-
-        book = Book.query.filter_by(title=self.title).first()
-        self.assertTrue(self.u1.is_book_in_list(book.id))
+    # def test_invalid_authentication(self):
+    #     self.assertFalse(User.authenticate(username='abc', password='password'))
 
 
-    def test_user_reviewed(self):
-        """Does the user_reviewed instance method functions correctly?"""
+    # def test_wrong_password(self):
+    #     """Does User.authenticate with incorrect password using the user, u1 return false? The correct password is password."""
 
-        #The user_reviewed instance method returns False when the user hasn't made a review for the book?
-        book = Book.query.filter_by(title=self.title).first()
-        self.assertFalse(self.u1.user_reviewed(book.id))
+    #     self.assertFalse(User.authenticate(username='test1', password='pass'))
 
-        #Making a review by u1
-        rating = 5
-        review = 'It was great!'
-        new_review = Review(rating=rating, review=review, user_id=self.u1_id, book_id=book.id)
-        db.session.add(new_review)
-        db.session.commit()
+    # def test_is_book_in_list(self):
+    #     """Does the is_book_in_list instance method function correctly?"""
 
-        #Check if the user_reviewed instance method returns True when the user has wrote a review for the book?
-        self.assertTrue(self.u1.user_reviewed(book.id))
+    #     book = Book.query.filter_by(title=self.title).first()
+    #     self.assertTrue(self.u1.is_book_in_list(book.id))
+
+
+    # def test_user_reviewed(self):
+    #     """Does the user_reviewed instance method functions correctly?"""
+
+    #     #The user_reviewed instance method returns False when the user hasn't made a review for the book?
+    #     book = Book.query.filter_by(title=self.title).first()
+    #     self.assertFalse(self.u1.user_reviewed(book.id))
+
+    #     #Making a review by u1
+    #     rating = 5
+    #     review = 'It was great!'
+    #     new_review = Review(rating=rating, review=review, user_id=self.u1_id, book_id=book.id)
+    #     db.session.add(new_review)
+    #     db.session.commit()
+
+    #     #Check if the user_reviewed instance method returns True when the user has wrote a review for the book?
+    #     self.assertTrue(self.u1.user_reviewed(book.id))
 
     
 

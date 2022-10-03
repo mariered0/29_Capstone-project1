@@ -32,7 +32,7 @@ connect_db(app)
 
 app.config['SECRET_KEY'] = "hahaha1987"
 # app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-# debug = DebugToolbarExtension(app)
+debug = DebugToolbarExtension(app)
 
 url = 'https://www.googleapis.com/books/v1'
 
@@ -200,8 +200,8 @@ def add_want_to_read(user_id):
 
     publisher = Publisher.query.filter_by(publisher=publisher).first_or_404()
 
-    Book.create_book_data(volumeId, title, thumbnail, authors, categories, publisher, subtitle)
-    new_book = Book.create_book_data(volumeId, title, thumbnail, authors, categories, publisher, subtitle)
+    Book.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
+    new_book = Book.create_book_data(volumeId, title, subtitle, thumbnail, authors, categories, publisher)
 
     user = g.user
 

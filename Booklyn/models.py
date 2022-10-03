@@ -109,7 +109,7 @@ class Book(db.Model):
 
 
     @classmethod
-    def create_book_data(cls, volumeId, title, thumbnail, authors, categories, publisher, subtitle=None):
+    def create_book_data(cls, volumeId, title, subtitle, thumbnail, authors, categories, publisher):
         """Create book data and relationships in db."""
 
         # Create book data in db
@@ -118,18 +118,18 @@ class Book(db.Model):
 
         books = cls.query.filter_by(title=title).all()
 
-        if books == None:
-            new_book = Book(volumeId=volumeId, title=title, thumbnail=thumbnail or User.thumbnail.default.arg, publisher_id=publisher_id, subtitle=subtitle)
+        if len(books) == 0:
+            new_book = Book(volumeId=volumeId, title=title, subtitle=subtitle, thumbnail=thumbnail or User.thumbnail.default.arg, publisher_id=publisher_id)
             db.session.add(new_book)
             db.session.commit()
-
-        elif len(books) >= 1:
+        
+        elif len(books) >= 2:
             for book in books:
                 if book.authors[0].author == authors[0]:
                     new_book = book
                     return new_book
 
-            new_book = Book(volumeId=volumeId, title=title, thumbnail=thumbnail or User.thumbnail.default.arg, publisher_id=publisher_id, subtitle=subtitle)
+            new_book = Book(volumeId=volumeId, title=title, subtitle=subtitle, thumbnail=thumbnail or User.thumbnail.default.arg, publisher_id=publisher_id)
             db.session.add(new_book)
             db.session.commit()
 
@@ -157,7 +157,7 @@ class Book(db.Model):
 
         #if there's one book with the same title
         else:
-            book = cls.query.filter_by(title=title).all()
+            book = cls.query.filter_by(title=title).first()
             if book.authors[0].author == authors[0]:
                 new_book = book
 
