@@ -133,34 +133,33 @@ class Book(db.Model):
             db.session.add(new_book)
             db.session.commit()
 
-        # Create books_authors relationship
-            if len(authors) != 1:
-                for author in authors:
-                    author = Author.query.filter(Author.author == author).first_or_404()
-                    new_book.authors.append(author)
-                    db.session.commit()
-            else:
-                author = Author.query.filter(Author.author == authors[0]).first_or_404()
-                new_book.authors.append(author)
-                db.session.commit()
-
-        # Create books_categories relationship
-            if len(categories) != 1:
-                for category in categories:
-                    cat = Category.query.filter(Category.category == category).first_or_404()
-                    new_book.categories.append(cat)
-                    db.session.commit()
-            else:
-                cat = Category.query.filter(Category.category == categories[0]).first_or_404()
-                new_book.categories.append(cat)
-                db.session.commit()
-
         #if there's one book with the same title
         else:
             book = cls.query.filter_by(title=title).first()
             if book.authors[0].author == authors[0]:
                 new_book = book
 
+        # Create books_authors relationship
+        if len(authors) != 1:
+            for author in authors:
+                author = Author.query.filter(Author.author == author).first_or_404()
+                new_book.authors.append(author)
+                db.session.commit()
+        else:
+            author = Author.query.filter(Author.author == authors[0]).first_or_404()
+            new_book.authors.append(author)
+            db.session.commit()
+
+        # Create books_categories relationship
+        if len(categories) != 1:
+            for category in categories:
+                cat = Category.query.filter(Category.category == category).first_or_404()
+                new_book.categories.append(cat)
+                db.session.commit()
+        else:
+            cat = Category.query.filter(Category.category == categories[0]).first_or_404()
+            new_book.categories.append(cat)
+            db.session.commit()
 
         return new_book
 
