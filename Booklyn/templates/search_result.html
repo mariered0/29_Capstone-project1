@@ -7,7 +7,7 @@
 
   <ul class="list-unstyled ">
     {% if result %}
-    
+
     <p>Found {{ result['items']|length }} books with the title "{{ search }}." </p>
     {% for book in result['items'] %}
     <li class="media mt-3" id="book-li">
@@ -69,7 +69,6 @@
 
               <input type="hidden" name="title" value="{{ book.volumeInfo.title }}">
               <input type="hidden" name="subtitle" value="{{ book.volumeInfo.subtitle }}">
-              <input type="hidden" name="published_date" value="{{ book.volumeInfo.publishedDate }}">
               {% if book.volumeInfo.imageLinks %}
               <input type="hidden" name="thumbnail" value="{{ book.volumeInfo.imageLinks.thumbnail }}">
               {% else %}
@@ -87,7 +86,7 @@
 
               <input type="hidden" name="title" value="{{ book.volumeInfo.title }}">
               <input type="hidden" name="subtitle" value="{{ book.volumeInfo.subtitle }}">
-              <input type="hidden" name="published_date" value="{{ book.volumeInfo.publishedDate }}">
+
               {% if book.volumeInfo.imageLinks %}
               <input type="hidden" name="thumbnail" value="{{ book.volumeInfo.imageLinks.thumbnail }}">
               {% else %}
@@ -107,7 +106,7 @@
 
               <input type="hidden" name="title" value="{{ book.volumeInfo.title }}">
               <input type="hidden" name="subtitle" value="{{ book.volumeInfo.subtitle }}">
-              <input type="hidden" name="published_date" value="{{ book.volumeInfo.publishedDate }}">
+
               {% if book.volumeInfo.imageLinks %}
               <input type="hidden" name="thumbnail" value="{{ book.volumeInfo.imageLinks.thumbnail }}">
               {% else %}
@@ -128,7 +127,7 @@
 
               <input type="hidden" name="title" value="{{ book.volumeInfo.title }}">
               <input type="hidden" name="subtitle" value="{{ book.volumeInfo.subtitle }}">
-              <input type="hidden" name="published_date" value="{{ book.volumeInfo.publishedDate }}">
+
               {% if book.volumeInfo.imageLinks %}
               <input type="hidden" name="thumbnail" value="{{ book.volumeInfo.imageLinks.thumbnail }}">
               {% else %}
