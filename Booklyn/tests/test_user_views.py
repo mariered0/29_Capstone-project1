@@ -1,10 +1,10 @@
-# """User view tests."""
+"""User view tests."""
 
 import os
 from unittest import TestCase
 
 from models import db, connect_db, User, Author, Category, Publisher, Book, Review
-# from flask import current_app
+
 
 os.environ['DATABASE_URL'] = "postgresql:///booklyn-test"
 
