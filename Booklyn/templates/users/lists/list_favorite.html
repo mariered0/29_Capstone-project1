@@ -1,78 +1,61 @@
-{% extends 'base.html' %}
+{% extends 'list_base.html' %}
 
 {% block title %}{{ user.username }}'s favorite list{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12 col-md-2">
-        <a href="/users/{{ user.id }}/edit"><img src="{{ user.image_url }}" alt="user's profile image"
-                class="img-thumbnail rounded-circle float-right mt-3" style="width: auto; height: 150px;"></a>
-    </div>
-    <div class="col-12 col-md-10">
-        <div>
-            <h2>{{ user.username }}
-                <a href="/users/{{ user.id }}/edit" class="text-muted inline edit_profile"><i
-                        class="fa-solid fa-pen-to-square"></i></a>
-            </h2>
-            <hr>
-        </div>
-        {% if user.bio %}
-        <div id="bio_div">
-            <p>{{ user.bio }}</p>
-        </div>
-        {% endif %}
-        <h2>Favorite</h2>
-        {% if user.favorite %}
-        {% for book in user.favorite %}
-        <div class="media" id="favorite_div">
-            <li class="media mt-3">
-                <a href="/books/{{ book.volumeId }}">
-                    <img src="{{ book.thumbnail }}" class="mr-3" alt="book cover image">
-                </a>
-                <div class="media-body">
-                    <h5>
-                        <a href="/books/{{ book.volumeId }}" class="book_title">
-                            {{ book.title }}
-                            {{ ': ' + book.subtitle if book.subtitle }}
-                        </a>
-                        {% if g.user %}
-                        <form action="/users/{{ user.id }}/favorite/{{ book.id }}/delete" method="POST"
-                            class="delete-form d-inline">
-                            <button class="btn btn-sm btn-secondary">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </form>
-                        {% endif %}
-                    </h5>
-                    <h6 class="card-subtitle mb-2 text-muted">
-                        by
-                        {% for author in book.authors %}
-                        {{ author.author }}
-                        {{ "," if not loop.last else "" }}
-                        {% endfor %}
-                    </h6>
-                    <p class="card-subtitle mb-2 text-muted">
-                        Genre:
-                        {% for category in book.categories %}
-                        {{ category.category }}
-                        {{ "," if not loop.last else "" }}
-                        {% endfor %}
-                    </p>
-                    {% if user.user_reviewed(book.id) %}
-                    {% for review in book.reviews %}
-                     {% if review.user_id == user.id %}
-                     <h5>Your Review:</h5>
-                    <p>{{ review.review }}</p>
-                    {% endif %}
-                    {% endfor %}
-                    {% endif %}
-                </div>
-            </li>
-        </div>
-        {% endfor %}
-        {% endif %}
 
-    </div>
+<h2>Favorite</h2>
+{% if user.favorite %}
+{% for book in user.favorite %}
+
+<div class="media">
+    <li class="media mt-3">
+        <a href="/books/{{ book.volumeId }}">
+            <img src="{{ book.thumbnail }}" class="mr-3" alt="book cover image">
+        </a>
+        <div class="media-body">
+            <h5>
+                <a href="/books/{{ book.volumeId }}" class="book_title">
+                    {{ book.title }}
+                    {{ ': ' + book.subtitle if book.subtitle }}
+                </a>
+                {% if g.user %}
+                <form action="/users/{{ user.id }}/favorite/{{ book.id }}/delete" method="POST"
+                    class="delete-form d-inline">
+                    <button class="btn btn-sm btn-secondary">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </form>
+                {% endif %}
+            </h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+                by
+                {% for author in book.authors %}
+                {{ author.author }}
+                {{ "," if not loop.last else "" }}
+                {% endfor %}
+            </h6>
+            <p class="card-subtitle mb-2 text-muted">
+                Genre:
+                {% for category in book.categories %}
+                {{ category.category }}
+                {{ "," if not loop.last else "" }}
+                {% endfor %}
+            </p>
+            {% if user.user_reviewed(book.id) %}
+            {% for review in book.reviews %}
+            {% if review.user_id == user.id %}
+            <h5>Your Review:</h5>
+            <p>{{ review.review }}</p>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+        </div>
+    </li>
+</div>
+{% endfor %}
+{% endif %}
+
 
 </div>
 
