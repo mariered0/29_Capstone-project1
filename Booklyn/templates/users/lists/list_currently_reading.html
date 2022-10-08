@@ -3,7 +3,7 @@
 {% block title %}{{ user.username }}'s currently_reading list{% endblock %}
 
 {% block content %}
-<h2>Currently Reading</h2>
+<h2>currently reading</h2>
 {% if user.currently_reading %}
 {% for book in user.currently_reading %}
 <div class="media" id="currently_reading_div">

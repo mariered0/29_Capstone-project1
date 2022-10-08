@@ -1,50 +1,74 @@
+@font-face {
+    font-family: ClasterOleander;
+    src: url('/static/font/Claster Oleander.ttf');
+}
+
+body {
+    padding-top: 60px;
+}
 
 /* ****************************************
 navbar
 ***************************************** */
-.navbar{
+.navbar {
     background: #B9C6CC;
+
 }
 
 /* Booklyn logo in nav bar */
-.navbar-brand{
-    font-family: serif;
+.navbar-brand {
+    font-family: ClasterOleander, serif;
 }
 
 /* ****************************************
 home page
 ***************************************** */
 
-.home{
+.home {
     height: 100vh;
     background-image: url('/static/images/home_background_lighter.jpeg');
 
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    
+    /* for sticky nav */
+    padding-top: 0px;
 }
 
-#home-title{
-    font-family: serif;
-    /* 'Space Mono', monospace; */
+#home-title {
+    font-family: ClasterOleander, serif;
     color: #CE7A12;
 
     font-size: 15vw;
-    /* Make title stands out */
-    font-weight: 530;
     text-shadow: 3px 3px #001219;
 }
 
 
 /* ****************************************
-user profile page
+signup/login pages
 ***************************************** */
+
+
+
 
 
 
 /* ****************************************
+user profile page
+***************************************** */
+.list_name {
+    color: #0A9396;
+}
+
+/* ****************************************
 lists
 ***************************************** */
+.list{
+    /* for sticky nav */
+    padding-top: 0px;
+}
+
 .book_title {
     color: black;
 }
@@ -59,9 +83,9 @@ lists
 book detail show page
 ***************************************** */
 
-.star-rating{
+.star-rating {
     color: #bebebe;
-    font-size:1.5em;
+    font-size: 1.5em;
 }
 
 
@@ -70,7 +94,7 @@ search result page
 ***************************************** */
 
 /* search_result page */
-.book_not_available_img{
+.book_not_available_img {
     max-width: 130px;
     max-height: 350px;
 }
