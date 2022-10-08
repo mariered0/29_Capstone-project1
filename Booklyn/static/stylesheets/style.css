@@ -1,11 +1,7 @@
-/* .edit_profile {
-    white-space: nowrap;
-} */
 
 /* ****************************************
 navbar
 ***************************************** */
-
 .navbar{
     background: #B9C6CC;
 }
@@ -21,7 +17,7 @@ home page
 
 .home{
     height: 100vh;
-    background-image: url('/static/images/home_background.jpg');
+    background-image: url('/static/images/home_background_lighter.jpeg');
 
     background-position: center;
     background-repeat: no-repeat;
@@ -32,7 +28,11 @@ home page
     font-family: serif;
     /* 'Space Mono', monospace; */
     color: #CE7A12;
+
     font-size: 15vw;
+    /* Make title stands out */
+    font-weight: 530;
+    text-shadow: 3px 3px #001219;
 }
 
 
