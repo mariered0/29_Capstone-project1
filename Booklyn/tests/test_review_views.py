@@ -1,6 +1,6 @@
 """Review view tests."""
 
-import os, requests
+import os
 from unittest import TestCase
 
 from models import db, connect_db, User, Author, Category, Publisher, Book, Review
@@ -15,7 +15,6 @@ db.create_all()
 
 app.config['WTF_CSRF_ENABLED'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-
 
 
 class BookViewTestCase(TestCase):
@@ -144,4 +143,105 @@ class BookViewTestCase(TestCase):
     def test_delete_review(self):
         """Test delete_review view."""
 
-        
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.u1_id
+
+            review = Review.query.filter_by(review=self.review).first()
+            resp = c.post(f'/users/{self.u1_id}/reviews/{review.id}/delete')
+
+            self.assertEqual(resp.status_code, 302)
+
+    def test_delete_review_redirection_followed(self):
+        """Test redirection of delete review view."""
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.u1_id
+
+            review = Review.query.filter_by(review=self.review).first()
+            resp = c.post(f'/users/{self.u1_id}/reviews/{review.id}/delete', follow_redirects=True)
+
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('Reviews', html)
+
+
+    def test_update_review_get(self):
+        """Test update_review view with get request."""
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.u1_id
+
+            review = Review.query.filter_by(review=self.review).first()
+            resp = c.get(f'/users/{self.u1_id}/reviews/{review.id}/update')
+
+            # user = User.query.get(self.u1_id)
+            # print('*******************')
+            # print(review, user.reviews)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertEqual(f'{review.review}', self.review)
+
+    def test_update_review_post(self):
+        """Test update_review view with post request."""
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.u1_id
+            review = Review.query.filter_by(review=self.review).first()
+            book = Book.query.filter_by(title=self.title).first()
+
+            edit = 'Edited!'
+
+            resp = c.post(f'/users/{self.u1_id}/reviews/{review.id}/update', data={
+                review.rating : 3,
+                review.review : 'Loved it',
+                review.user_id : self.u1_id,
+                review.book_id : book.id
+            })
+
+            db.session.commit()
+            review.update_time()
+
+            self.assertEqual(resp.status_code, 302)
+
+
+    def test_update_review_post_redirection_followed(self):
+        """Test redirection of update_review view with post request."""
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.u1_id
+
+            review = Review.query.filter_by(review=self.review).first()
+            book = Book.query.filter_by(title=self.title).first()
+
+            resp = c.post(f'/users/{self.u1_id}/reviews/{review.id}/update', data={
+                review.rating : 3,
+                review.review : 'Loved it',
+                review.user_id : self.u1_id,
+                review.book_id : book.id
+            }, follow_redirects=True)
+
+            db.session.commit()
+            review.update_time()
+
+            html = resp.get_data(as_text=True)
+
+            user = User.query.get(self.u1_id)
+            print('*******************')
+            print('review', user.reviews)
+
+            self.assertEqual(resp.status_code, 200)
+            # self.assertIn('Edited!', html)
+
+
+
+
+            
+
+
+            
