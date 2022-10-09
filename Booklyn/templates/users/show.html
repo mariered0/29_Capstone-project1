@@ -72,8 +72,9 @@
                         <a href="/books/{{ book.volumeId }}">
                             <div class="container">
                                 <div class="text-center mt-3">
-                                    <img src="{{ book.thumbnail }}" class="card-img-top img-fluid justify-content-center mt-3"
-                                        alt="book cover" style="width: 150px; height: 200px;">
+                                    <img src="{{ book.thumbnail }}"
+                                        class="card-img-top img-fluid justify-content-center mt-3" alt="book cover"
+                                        style="width: 150px; height: 200px;">
                                 </div>
                             </div>
                             <div class="card-body">
@@ -97,8 +98,9 @@
                         <a href="/books/{{ book.volumeId }}">
                             <div class="container">
                                 <div class="text-center mt-3">
-                                    <img src="{{ book.thumbnail }}" class="card-img-top img-fluid justify-content-center mt-3"
-                                        alt="book cover" style="width: 150px; height: 200px;">
+                                    <img src="{{ book.thumbnail }}"
+                                        class="card-img-top img-fluid justify-content-center mt-3" alt="book cover"
+                                        style="width: 150px; height: 200px;">
                                 </div>
                             </div>
                             <div class="card-body">
@@ -120,30 +122,26 @@
                 <div class="card-deck row">
                     {% for book in user.read[:3] %}
                     <div class="card col-12 col-md-6 col-xl-3">
+                        <a href="/books/{{ book.volumeId }}">
 
-                        <div class="container">
-                            <div class="text-center mt-3">
-                                <a href="/books/{{ book.volumeId }}">
-                                    <img src="{{ book.thumbnail }}" class="card-img-top img-fluid justify-content-center mt-3"
-                                        alt="book cover" style="width: 150px; height: 200px;">
-                                </a>
+                            <div class="container">
+                                <div class="text-center mt-3">
+                                    <img src="{{ book.thumbnail }}" class="card-img-top img-fluid" alt="book cover"
+                                        style="width: 150px; height: 200px;">
+                                </div>
+
+                                <div class="card-body">
+                                    <p class="card-text h5 text-dark">{{ book.title }}</p>
+                                    <p class="card-text font-italic text-muted">By {{ book.authors[0].author }}</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <a href="/books/{{ book.volumeId }}">
-                                <p class="card-text h5 text-dark">{{ book.title }}</p>
-                                <p class="card-text font-italic text-muted">By {{ book.authors[0].author }}
-                                </p>
-                            </a>
-                        </div>
+                        </a>
                     </div>
-                </div>
 
+                {% endfor %}
             </div>
-            {% endfor %}
+            {% endif %}
     </div>
-    {% endif %}
-</div>
 </div>
 
 </div>
