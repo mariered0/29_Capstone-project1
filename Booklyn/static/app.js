@@ -1,14 +1,8 @@
-// const postBtn = document.querySelector('#post_btn');
+//get all the stars
 
-// postBtn.addEventListener('submit', processForm)
+const one = document.querySelector('[data-star="1"]')
+const two = document.querySelector('[data-star="2"]')
+const three = document.querySelector('[data-star="3"]')
+const four = document.querySelector('[data-star="4"]')
+const five = document.querySelector('[data-star="5"]')
 
-// function processForm(evt){
-//     evt.preventDefault();
-
-//     const rating1 = $('#rating_1').val();
-//     const rating2 = $('#rating_2').val();
-//     const rating3 = $('#rating_3').val();
-//     const rating4 = $('#rating_4').val();
-//     const rating5 = $('#rating_5').val();
-//     const review = $('#review').val();
-// }

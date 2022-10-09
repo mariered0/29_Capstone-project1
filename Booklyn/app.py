@@ -1,4 +1,5 @@
 import os
+from re import I
 
 from flask import Flask, request, render_template, redirect, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
@@ -602,7 +603,7 @@ def update_review(user_id, review_id):
 ##########################################################
 
 @app.route('/books/<volumeId>', methods=['GET', 'POST'])
-def show_book(volumeId):
+def show_book(volumeId, rating=None, half=None):
     """Show book detail page with review form if the user already has the book in their list."""
 
     user = g.user
@@ -617,6 +618,21 @@ def show_book(volumeId):
         desc = result['volumeInfo']['description']
     else:
         desc = 'N/A'
+
+    if 'averageRating' in result['volumeInfo']:
+        # ave = result['volumeInfo']['averageRating']
+        if isinstance(result['volumeInfo']['averageRating'], int):
+            rating = int(result['volumeInfo']['averageRating'])
+            half = 0
+
+        if isinstance(result['volumeInfo']['averageRating'], float):
+            i, f = divmod(result['volumeInfo']['averageRating'], 1)
+            rating = int(i) 
+            half = f
+            print('********************')
+            print('rating', rating)
+            print('half', half)
+
         
     # we're just checking if the book exist or not, so we don't want 404 error here.
     book = Book.query.filter_by(volumeId=volumeId).first()
@@ -634,15 +650,15 @@ def show_book(volumeId):
 
     # if the book is not in the db, do not show the review form
     if book == None:
-            return render_template('book.html', result=result, user=user, desc=desc)
+            return render_template('book.html', result=result, user=user, desc=desc, rating=rating, half=half)
 
     # if the book is in any of the lists for the user, show review form
     elif user.is_book_in_list(book.id):
-        return render_template('book.html', result=result, user=user, desc=desc, form=form, book=book)
+        return render_template('book.html', result=result, user=user, desc=desc, form=form, book=book, rating=rating, half=half)
 
     #If the book is in the db but not in user's list
     else:
-        return render_template('book.html', result=result, user=user, desc=desc, book=book)
+        return render_template('book.html', result=result, user=user, desc=desc, book=book, rating=rating, half=half)
 
 
 # @app.errorhandler(404)
