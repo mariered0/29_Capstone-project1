@@ -32,7 +32,7 @@
       <i class="fa fa-star-half-o" aria-hidden="true" id="half_star"></i>
       {% endif %}
 
-      
+
       {% if half == 0 %}
       {% for i in range(0, 5 - rating) %}
       <i class="fa-regular fa-star"></i>
@@ -82,33 +82,54 @@
 
   {% if book %}
   {% if book.reviews %}
-  <h1 class="mt-3">Reviews</h1>
+  <h1 class="mt-3">reviews</h1>
   {% for review in book.reviews %}
 
-  <div class="card mb-3">
+  <div class="card mb-4">
     <div class="row">
-      <div class="col-md-4">
-        <div>
-          <img src="{{ review.user.image_url }}" class="card-img" alt="user image">
+      <div class="col-12 col-lg-3">
+        <div class="mt-2 ml-2">
+          <img src="{{ review.user.image_url }}" class="card-img text-center" alt="user image" style="width: auto; height: 150px;">
         </div>
       </div>
-      <div class="col-md-8">
+      <div class="col-12 col-lg-7 p-2">
         <div class="card-body">
-          <h5>Here, show star rating
-            {% if g.user == review.user %}
-            <form action="/users/{{ user.id }}/reviews/{{ review.id }}/delete" method="POST"
-              class="delete-form d-inline">
-              <button class="btn btn-sm btn-secondary d-inline">
-                <i class="fa-solid fa-trash-can"></i>
-            </form>
-            {% endif %}
+          <h5>
+            <div>
+              <div id="star_div" class="star-rating">
+                {% for i in range(0, review.rating) %}
+                <i class="fa-solid fa-star"></i>
+                {% endfor %}
+
+                {% for i in range(0, 5 - review.rating) %}
+                <i class="fa-regular fa-star"></i>
+                {% endfor %}
+              </div>
+            </div>
           </h5>
 
-          <p class="card-text">{{ review.review }}</p>
-          <p class="card-text"><small class="text-muted">Reviewed by {{review.user.username}} on:
+          <p class="card-text font-italic text-muted">by {{ review.user.username.lower() }}</p>
+          <p class="card-text">{{ review.review | truncate(600) }}</p>
+          <p class="card-text"><small class="text-muted">reviewed on:
               {{ review.date_added.strftime('%B %d %Y') }}</small></p>
         </div>
       </div>
+
+      <div class="col-12 col-lg-1">
+        <div class="p-3 text-right">
+          {% if g.user == review.user %}
+          <form action="/users/{{ user.id }}/reviews/{{ review.id }}/delete" method="POST" class="delete-form form-inline">
+            <button class="btn btn-sm btn-secondary d-inline-flex">
+              <i class="fa-solid fa-trash-can"></i>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+
+
+
+
+
     </div>
   </div>
 
