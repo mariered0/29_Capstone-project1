@@ -1,5 +1,5 @@
 import os
-from re import I
+
 
 from flask import Flask, request, render_template, redirect, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
@@ -9,8 +9,7 @@ from sqlalchemy.exc import IntegrityError
 from forms import UserAddForm, LoginForm, UserEditForm, BookReviewForm
 from secret import GOOGLE_BOOKS_API_KEY
 from models import db, connect_db, User, Author, Category, Publisher, Book, Review
-# from werkzeug.datastructures import MultiDict
-# from werkzeug.exceptions import HTTPException
+
 
 import requests, ast
 

@@ -118,3 +118,12 @@ search result page
     max-width: 130px;
     max-height: 350px;
 }
+
+
+/* ****************************************
+error page
+***************************************** */
+
+.error_message {
+    font-family: ClasterOleander, serif;
+}
