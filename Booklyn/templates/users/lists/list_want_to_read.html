@@ -8,7 +8,7 @@
 {% if user.want_to_read %}
 
 {% for book in user.want_to_read %}
-<div class="media" id="want_to_read_div">
+<div class="media mb-3" id="want_to_read_div">
     <li class="media mt-3">
         <div></div>
         <a href="/books/{{ book.volumeId }}" class="book_title">

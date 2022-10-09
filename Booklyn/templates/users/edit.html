@@ -47,9 +47,8 @@
                 {% if user.bio == None%}
                 {{ form.bio(placeholder='Introduce yourself!', class="form-control") }}
                 {% else %}
-                <textarea id="body" name="body" class="form-control">{{ user.bio }}</textarea>
+                <textarea id="bio" name="bio" class="form-control">{{ user.bio }}</textarea>
 
-                
                 {% endif %}
                 
             </div>
@@ -61,7 +60,9 @@
                 {{ form.password(placeholder='Enter password for validation', class="form-control") }}
             </div>
            
-            <button class="btn btn-primary btn-lg btn-block">Update</button>
+            <div class="text-center">
+                <button class="btn btn-info">update</button>
+            </div>
         
         </form>
 

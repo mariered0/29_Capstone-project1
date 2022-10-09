@@ -6,17 +6,16 @@
 
 <div class="row">
     <div class="col-2">
-       <img src="{{ review.book.thumbnail }}" alt="book cover image"
-                class="float-right mt-3">
+        <img src="{{ review.book.thumbnail }}" alt="book cover image" class="float-right mt-3">
     </div>
     <div class="col-10">
         <div>
-            <h2>Edit Review</h2>
+            <h2>edit review</h2>
             <hr>
         </div>
         <form method="POST" id="user_edit_form">
             {{ form.hidden_tag() }}
-        
+
             <div class="form-group">
                 {{ form.rating.label }}
                 {% for error in form.rating.errors %}
@@ -24,7 +23,7 @@
                 {% endfor %}
                 {{ form.rating(value=review.rating, class="form-control") }}
             </div>
-    
+
             <div class="form-group">
                 {{ form.review.label }}
                 {% for error in form.review.errors %}
@@ -32,19 +31,17 @@
                 {% endfor %}
                 {% if review %}
                 <textarea id="review" name="review" class="form-control">{{ review.review }}</textarea>
-                <!-- {{ form.review(class="form-control", id="form_textarea_review") }} -->
-            
-                <script>document.querySelector('#form_textarea_review').innerText = `${review.review}`</script>
 
                 {% endif %}
-               
+
             </div>
-          
-           
-            <button class="btn btn-primary btn-lg btn-block">Update</button>
-        
+
+            <div class="text-center">
+                <button class="btn btn-info">update</button>
+            </div>
+
         </form>
 
 
 
-{% endblock %}
+        {% endblock %}

@@ -17,6 +17,11 @@
                                 class="fa-solid fa-pen-to-square"></i></a>
                     </h3>
                 </div>
+                {% if user.bio %}
+                <div id="bio_div">
+                    <p>{{ user.bio }}</p>
+                </div>
+                {% endif %}
                 <div>
                     <a href="/users/{{ user.id }}/reviews" class="btn btn-info btn-sm mt-3">reviews</a>
                 </div>
@@ -27,11 +32,7 @@
     </div>
     <div class="col-12 col-md-10">
 
-        {% if user.bio %}
-        <div id="bio_div">
-            <p>{{ user.bio }}</p>
-        </div>
-        {% endif %}
+
 
         <div class="container">
             {% if user.favorite|length > 0 %}
@@ -138,11 +139,11 @@
                         </a>
                     </div>
 
-                {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
     </div>
-</div>
 
 </div>
 

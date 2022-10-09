@@ -12,15 +12,16 @@
     <div class="row">
       <div class="col-12 col-lg-3">
         <div class="m-3">
+          <a href="/books/{{ review.book.volumeId }}">
           <img src="{{ review.book.thumbnail }}" class="card-img" alt="book cover" style="width: 150px; height: 200px;">
+        </a>
         </div>
       </div>
       <div class="col-12 col-lg-7 p-2">
         <div class="card-body">
 
           <h5>
-            <div>
-              <div id="star_div" class="star-rating">
+              <div id="star_div" class="star-rating d-inline-block">
                 {% for i in range(0, review.rating) %}
                 <i class="fa-solid fa-star"></i>
                 {% endfor %}
@@ -29,7 +30,26 @@
                 <i class="fa-regular fa-star"></i>
                 {% endfor %}
               </div>
-            </div>
+
+            {% if g.user == review.user%}
+
+              <form action="/users/{{ user.id }}/reviews/{{ review.id }}/delete" method="POST"
+                class="delete-form m-1 d-inline-block">
+                <button class="btn btn-sm btn-secondary">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </form>
+
+  
+
+              <a href="/users/{{ user.id }}/reviews/{{ review.id }}/update" class="text-muted edit_profile" role="button">
+                <button class="btn btn-sm btn-secondary m-1">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+              </a>
+
+            {% endif %}
+
           </h5>
 
           <p class="card-text">{{ review.review }}</p>
@@ -39,24 +59,7 @@
       </div>
       <div class="col-12 col-lg-2">
         <div class="p-3 text-right">
-          {% if g.user == review.user%}
-          <div class="m-1">
-            <form action="/users/{{ user.id }}/reviews/{{ review.id }}/delete" method="POST"
-              class="delete-form">
-              <button class="btn btn-sm btn-secondary">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
-            </form>
-          </div>
-
-          <div class="m-1">
-            <a href="/users/{{ user.id }}/reviews/{{ review.id }}/update" class="text-muted edit_profile" role="button">
-              <button class="btn btn-sm btn-secondary">
-                <i class="fa-solid fa-pen-to-square"></i>
-              </button>
-            </a>
-          </div>
-          {% endif %}
+         
         </div>
       </div>
     </div>
@@ -64,10 +67,5 @@
    
   </div>
   {% endfor %}
-
-
-
-
-
 
 {% endblock %}
