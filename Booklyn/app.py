@@ -171,7 +171,7 @@ def add_want_to_read(user_id):
         data[key] = value
     
     # Create author data in db
-    if len(data['author']) is 0 or 'author' not in data:
+    if len(data['author']) == 0 or 'author' not in data:
         authors = ['N/A']
     else:
         authors = ast.literal_eval(data['author'])
@@ -179,7 +179,7 @@ def add_want_to_read(user_id):
     Author.create_author_data(authors)
 
     # Create category data in db
-    if len(data['category']) is 0 or 'category' not in data:
+    if len(data['category']) == 0 or 'category' not in data:
         categories = ['N/A']
     else:
         categories = ast.literal_eval(data['category'])
@@ -240,7 +240,7 @@ def add_currently_reading(user_id):
         data[key] = value
     
     # Create author data in db
-    if len(data['author']) is 0 or 'author' not in data:
+    if len(data['author']) == 0 or 'author' not in data:
         authors = ['N/A']
     else:
         authors = ast.literal_eval(data['author'])
@@ -248,7 +248,7 @@ def add_currently_reading(user_id):
     Author.create_author_data(authors)
 
     # Create category data in db
-    if len(data['category']) is 0:
+    if len(data['category']) == 0:
         categories = ['N/A']
     else:
         categories = ast.literal_eval(data['category'])
@@ -308,7 +308,7 @@ def add_read(user_id):
         data[key] = value
     
     # Create author data in db
-    if len(data['author']) is 0 or 'author' not in data:
+    if len(data['author']) == 0 or 'author' not in data:
         authors = ['N/A']
     else:
         authors = ast.literal_eval(data['author'])
@@ -317,7 +317,7 @@ def add_read(user_id):
     Author.create_author_data(authors)
 
     # Create category data in db
-    if len(data['category']) is 0:
+    if len(data['category']) == 0:
         categories = ['N/A']
     else:
         categories = ast.literal_eval(data['category'])
@@ -377,7 +377,7 @@ def add_favorite(user_id):
         data[key] = value
     
     # Create author data in db
-    if len(data['author']) is 0 or 'author' not in data:
+    if len(data['author']) == 0 or 'author' not in data:
         authors = ['N/A']
     else:
         authors = ast.literal_eval(data['author'])
@@ -385,7 +385,7 @@ def add_favorite(user_id):
     Author.create_author_data(authors)
 
     # Create category data in db
-    if len(data['category']) is 0:
+    if len(data['category']) == 0:
         categories = ['N/A']
     else:
         categories = ast.literal_eval(data['category'])
@@ -629,9 +629,7 @@ def show_book(volumeId, rating=None, half=None):
             i, f = divmod(result['volumeInfo']['averageRating'], 1)
             rating = int(i) 
             half = f
-            print('********************')
-            print('rating', rating)
-            print('half', half)
+
 
         
     # we're just checking if the book exist or not, so we don't want 404 error here.
@@ -661,17 +659,17 @@ def show_book(volumeId, rating=None, half=None):
         return render_template('book.html', result=result, user=user, desc=desc, book=book, rating=rating, half=half)
 
 
-# @app.errorhandler(404)
-# def page_not_found(e):
-#     """Handle 404 page not found."""
+@app.errorhandler(404)
+def page_not_found(e):
+    """Handle 404 page not found."""
 
-#     return render_template('404.html'), 404
+    return render_template('404.html'), 404
 
-# @app.errorhandler(Exception)
-# def page_not_found(e):
-#     """Handle exceptions."""
+@app.errorhandler(Exception)
+def page_not_found(e):
+    """Handle exceptions."""
 
-#     return render_template('404.html', e=e), 500
+    return render_template('404.html', e=e), 500
 
 
 ##############################################################################
