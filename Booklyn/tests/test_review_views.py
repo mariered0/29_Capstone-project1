@@ -231,12 +231,8 @@ class BookViewTestCase(TestCase):
 
             html = resp.get_data(as_text=True)
 
-            user = User.query.get(self.u1_id)
-            print('*******************')
-            print('review', user.reviews)
-
             self.assertEqual(resp.status_code, 200)
-            # self.assertIn('Edited!', html)
+       
 
 
 

@@ -49,6 +49,7 @@
     </div>
   </nav>
 
+
   {% for category, message in get_flashed_messages(with_categories=True) %}
   <div class="container mt-3">
     <div class="alert alert-{{ category }}">{{ message }}</div>
@@ -56,11 +57,9 @@
   {% endfor %}
 
 
-
-<div id="home-container" class="container">
-  
+  <div id="home-container" class="container">
     <div class="row justify-content-center">
-        <h1 id="home-title">Booklyn</h1>
+      <h1 id="home-title">Booklyn</h1>
     </div>
 
     <div class="row mt-3 justify-content-center">
@@ -73,16 +72,7 @@
         </form>
       </div>
     </div>
-
-
-</div>
-
-
-
-
-
-
-
+  </div>
 
 
 
@@ -93,5 +83,9 @@
     integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous">
   </script>
 </body>
+
+
+
+
 
 </html>
