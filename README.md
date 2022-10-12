@@ -24,8 +24,21 @@ Book cover images are provided through their API as well as other information su
 ## DATABASE SCHEMA
 ![database schema](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Schema_Booklyn_updated.png?raw=true)
 
+## How to Use
+1. First please sign up.
+2. Once you sign up, search for a book title. There will be maximum of 40 books that were hit with the term displayed.
+3. Add your favorite books to your favorite list or a book to your want to read, currently reading or read list.
+4. You can write a review of the books that are in your list. All of the reviews you've written can be seen from the review button in your profile page which can be accessed from your username in the nav bar.
+
 ## Features
-1. 
+
+###Only first book with same title is added to a list
+Multiple books with the same title published by different publishers or different versions of the same books are displayed when you search.
+If you add two books with the same title and same author, only the first one will be added to the list to avoid user's confusion (no dupilication).
+
+
+
+
 
 
 
