@@ -34,10 +34,12 @@ Book cover images are provided through their API as well as other information su
 
 ### Only first book with same title is added to a list
 Multiple books with the same title published by different publishers or different versions of the same books are displayed when you search.<br/>
-![search result](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/Screen Shot 2022-10-11 at 6.52.43 PM.png?raw=true)
+![search result](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/search_result_same_title.png?raw=true)
 
 If you add two books with the same title and same author, only the first one will be added to the list to avoid user's confusion (no dupilication).<br/>
-![book added to list](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/Screen Shot 2022-10-11 at 6.54.54 PM.png?raw=true)
+![book added to list](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/one_book_added_to_list.png?raw=true)
+
+
 
 
 
