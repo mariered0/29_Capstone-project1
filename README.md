@@ -4,7 +4,7 @@
 ## OVERVIEW
 Booklyn is a digital book shelf where users can label books they want to read, are currently reading, have read, or favorite and they can leave reviews on the books.</br>
 
-![landing_page](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/landing_page.png?raw=true)
+![landing_page](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/landing_page.png?raw=true)
 
 App: [Booklyn](https://booklyn-app.herokuapp.com/)</br>
 Proposal of this project: [Booklyn_Proposal.pdf](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Capstone1_proposal.pdf)
