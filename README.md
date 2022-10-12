@@ -33,7 +33,7 @@ Book cover images are provided through their API as well as other information su
 ## Highlighted Features
 
 ### Avoid user confusion by adding only first book with same title and author
-Multiple books with the same title are sometimes published by different publishers or different versions of the same books and they are all displayed when you search.<br/>
+Multiple books with the same title are sometimes published by different publishers or different versions of the same books are sometimes released, and they are all displayed here when you search.<br/>
 ![search result](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/search_result_same_title.png?raw=true)
 
 If you add two books with the same title and same author to a list, only the first one will be added to the list as below to avoid user's confusion (no dupilication).<br/>
@@ -46,7 +46,7 @@ Book detail page can be accessed by clicking each book cover or title in the lis
 
 **Average Rating**
 The average rating below the book cover image is retrived from the Google Book API. The average ratings are sometimes dicimals, so I separated the value into intiger and dicimals to show full, hald and empty stars.
-![rating](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/.png?raw=true)
+![rating](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/rating_half.png?raw=true)
 
 
 **User's Rating**
