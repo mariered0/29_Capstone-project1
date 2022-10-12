@@ -625,7 +625,7 @@ def show_book(volumeId, rating=None, half=None):
         desc = 'N/A'
 
     if 'averageRating' in result['volumeInfo']:
-        # ave = result['volumeInfo']['averageRating']
+
         if isinstance(result['volumeInfo']['averageRating'], int):
             rating = int(result['volumeInfo']['averageRating'])
             half = 0

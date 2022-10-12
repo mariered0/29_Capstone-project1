@@ -30,14 +30,34 @@ Book cover images are provided through their API as well as other information su
 3. Add your favorite books to your favorite list or a book to your want to read, currently reading or read list.
 4. You can write a review of the books that are in your list. All of the reviews you've written can be seen from the review button in your profile page which can be accessed from your username in the nav bar.
 
-## Features
+## Highlighted Features
 
-### Only first book with same title is added to a list
-Multiple books with the same title published by different publishers or different versions of the same books are displayed when you search.<br/>
-![search result](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/search_result_same_title.png width="600" height="800")
+### Avoid user confusion by adding only first book with same title and author
+Multiple books with the same title are sometimes published by different publishers or different versions of the same books and they are all displayed when you search.<br/>
+![search result](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/search_result_same_title.png?raw=true)
 
-If you add two books with the same title and same author, only the first one will be added to the list to avoid user's confusion (no dupilication).<br/>
+If you add two books with the same title and same author to a list, only the first one will be added to the list as below to avoid user's confusion (no dupilication).<br/>
 ![book added to list](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/one_book_added_to_list.png?raw=true)
+
+### Reviews
+
+Book detail page can be accessed by clicking each book cover or title in the list displayed when you searched. When the book has reviews from other users, it is shown in this book detail page.<br/>
+![book review](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/book_review.png?raw=true)
+
+**Average Rating**
+The average rating below the book cover image is retrived from the Google Book API. The average ratings are sometimes dicimals, so I separated the value into intiger and dicimals to show full, hald and empty stars.
+![rating](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/.png?raw=true)
+
+
+**User's Rating**
+User can also add their rating which is show with their review comments.
+
+The review form is not shown if the book is not in any of user's lists.
+
+
+
+
+
 
 
 
