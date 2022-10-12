@@ -2,7 +2,7 @@
 
 
 ## OVERVIEW
-Booklyn is a digital book shelf where users can label books they want to read, are currently reading, have read, or favorite and they can leave reviews on the books.
+Booklyn is a digital book shelf where users can label books they want to read, are currently reading, have read, or favorite and they can leave reviews on the books.</br>
 
 ![landing_page](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/landing_page.png?raw=true)
 
