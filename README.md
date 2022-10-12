@@ -46,7 +46,7 @@ Book detail page can be accessed by clicking each book cover or title in the lis
 
 **Average Rating**
 The average rating below the book cover image is retrived from the Google Book API. The average ratings are sometimes dicimals, so I separated the value into intiger and dicimals to show full, hald and empty stars.
-![rating](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/rating_half.png?raw=true)
+![rating](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/rating_half_star.png?raw=true)
 
 
 **User's Rating**
