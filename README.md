@@ -67,7 +67,7 @@ The review form is not shown if the book is not in any of user's lists.
 The average rating below the book cover image is retrived from the Google Book API. The average ratings are sometimes dicimals, so I separated the value into intiger and dicimals to show full, half and empty stars.
 ![rating](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/rating_half_star.png?raw=true)
 
-###Things Learned
+### Things Learned
 * It's important to plan out the project first as specific as possible, but no need to stick with it (be flexible).
 
 
