@@ -20,7 +20,7 @@ Book cover images are provided through their API as well as other information su
 ## DATABASE SCHEMA
 ![database schema](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Schema_Booklyn_updated.png?raw=true)
 
-##Technologies Used
+## Technologies Used
 **Backend**<br>
 
 * Python (Flask)
