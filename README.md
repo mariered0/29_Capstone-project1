@@ -1,34 +1,46 @@
 # Capstone-project 1: Booklyn
 
 
-
-Please check out my project: [Booklyn](https://booklyn-app.herokuapp.com/)
-
-
 ## OVERVIEW
 Booklyn is a digital book shelf where users can label books they want to read, are currently reading, have read, or favorite and they can leave reviews on the books.
-## GOALS
-1. Users will be able to keep track of which books they wanted to read and have read as well as what they felt when they read.
-2. Help people read or access more books that interest them by the social media aspect of this app.
 
-## USER DEMOGRAPHIC
-People who like to read, want to share their thoughts about books or see other people's reviews on books.
+![landing_page](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/landing_page.png?raw=true)
+
+App: [Booklyn](https://booklyn-app.herokuapp.com/)</br>
+Proposal of this project: [Booklyn_Proposal.pdf](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Capstone1_proposal.pdf)
+
 
 ## DATA SOURCE
-Data will be sourced from the following:
-- [Google Books API](https://developers.google.com/books/docs/v1/getting_started)
+Data is sourced by [Google Books API](https://developers.google.com/books/docs/v1/getting_started).
 
     
 Book cover images are provided through their API as well as other information such as book titles, subtitles, authors, genre, publisher and average user ratings.
+
     
 ## DATABASE SCHEMA
 ![database schema](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Schema_Booklyn_updated.png?raw=true)
 
+##Technologies Used
+**Backend**<br>
+
+* Python (Flask)
+* SQLAlchemy/PostgreSQL
+* bcrypt password hashing
+
+**Frontend**</br>
+
+* Bootstrap
+
 ## How to Use
-1. First please sign up.
+1. First, sign up as a user.
 2. Once you sign up, search for a book title. There will be maximum of 40 books that were hit with the term displayed.
 3. Add your favorite books to your favorite list or a book to your want to read, currently reading or read list.
-4. You can write a review of the books that are in your list. All of the reviews you've written can be seen from the review button in your profile page which can be accessed from your username in the nav bar.
+4. The books added to your lists can be seen in the user profile page which can be accessed from your username in the nav bar.
+5. From the search result list or your profile page, if you click the book cover image or title, you can go to the book detail page, where you can see the description of the book as well as average rating and your review if there's any.
+6. . You can write a review of the books that are in your list. All of the reviews you've written can be seen from the review button in your profile page.
+
+
+
 
 ## Highlighted Features
 
@@ -44,15 +56,25 @@ If you add two books with the same title and same author to a list, only the fir
 Book detail page can be accessed by clicking each book cover or title in the list displayed when you searched. When the book has reviews from other users, it is shown in this book detail page.<br/>
 ![book review](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/book_review.png?raw=true)
 
-**Average Rating**
-The average rating below the book cover image is retrived from the Google Book API. The average ratings are sometimes dicimals, so I separated the value into intiger and dicimals to show full, hald and empty stars.
-![rating](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/rating_half_star.png?raw=true)
-
-
 **User's Rating**
-User can also add their rating which is show with their review comments.
+
+User can also add their rating which is shown with their review comments.
 
 The review form is not shown if the book is not in any of user's lists.
+
+**Average Rating**
+
+The average rating below the book cover image is retrived from the Google Book API. The average ratings are sometimes dicimals, so I separated the value into intiger and dicimals to show full, half and empty stars.
+![rating](https://github.com/mariered0/29_Capstone-project1/blob/main/Documentation/Images_doc/rating_half_star.png?raw=true)
+
+###Things Learned
+* It's important to plan out the project first as specific as possible, but no need to stick with it (be flexible).
+
+
+* Make a list of things to do in each task. There are many elements that you can work on in the project, so it is easy to get distracted by something other elements while you are working on something.
+
+
+
 
 
 
